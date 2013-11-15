@@ -1,0 +1,6 @@
+[submodule "Libraries/PathFinder"]
+	path = Libraries/PathFinder
+	url = git@github.com:Fanagame/pathfinder.git
+[submodule "Libraries/JSTiledMap"]
+	path = Libraries/JSTiledMap
+	url = git@github.com:Fanagame/JSTileMap.git
