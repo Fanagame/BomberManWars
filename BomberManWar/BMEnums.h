@@ -30,3 +30,11 @@ typedef enum : uint8_t {
     BMHudButtonColor_Yellow,
     BMHudButtonColor_Blue
 } BMHudButtonColor;
+
+typedef enum BMDirection : NSInteger {
+	kDirectionNone = -1,
+	kDirectionDown = 0,
+	kDirectionLeft = 1,
+	kDirectionUp = 2,
+	kDirectionRight = 3
+} BMDirection;

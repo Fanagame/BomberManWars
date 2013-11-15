@@ -57,6 +57,10 @@
 		72D869E11836107200478FE6 /* btn_rect_red@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72D869D31836107200478FE6 /* btn_rect_red@2x.png */; };
 		72D869E21836107200478FE6 /* btn_rect_yellow.png in Resources */ = {isa = PBXBuildFile; fileRef = 72D869D41836107200478FE6 /* btn_rect_yellow.png */; };
 		72D869E31836107200478FE6 /* btn_rect_yellow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72D869D51836107200478FE6 /* btn_rect_yellow@2x.png */; };
+		72D869E6183686B900478FE6 /* BMCharacter.m in Sources */ = {isa = PBXBuildFile; fileRef = 72D869E5183686B900478FE6 /* BMCharacter.m */; };
+		72D869EA183686E200478FE6 /* BMBomb.m in Sources */ = {isa = PBXBuildFile; fileRef = 72D869E9183686E200478FE6 /* BMBomb.m */; };
+		72D869ED1836871200478FE6 /* BMPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 72D869EC1836871200478FE6 /* BMPlayer.m */; };
+		72D869F018368B2300478FE6 /* BMJoystick.m in Sources */ = {isa = PBXBuildFile; fileRef = 72D869EF18368B2300478FE6 /* BMJoystick.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -141,6 +145,14 @@
 		72D869D31836107200478FE6 /* btn_rect_red@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "btn_rect_red@2x.png"; path = "Resources/UI/btn_rect_red@2x.png"; sourceTree = "<group>"; };
 		72D869D41836107200478FE6 /* btn_rect_yellow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = btn_rect_yellow.png; path = Resources/UI/btn_rect_yellow.png; sourceTree = "<group>"; };
 		72D869D51836107200478FE6 /* btn_rect_yellow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "btn_rect_yellow@2x.png"; path = "Resources/UI/btn_rect_yellow@2x.png"; sourceTree = "<group>"; };
+		72D869E4183686B900478FE6 /* BMCharacter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BMCharacter.h; path = Models/MapObjects/BMCharacter.h; sourceTree = "<group>"; };
+		72D869E5183686B900478FE6 /* BMCharacter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BMCharacter.m; path = Models/MapObjects/BMCharacter.m; sourceTree = "<group>"; };
+		72D869E8183686E200478FE6 /* BMBomb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMBomb.h; sourceTree = "<group>"; };
+		72D869E9183686E200478FE6 /* BMBomb.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMBomb.m; sourceTree = "<group>"; };
+		72D869EB1836871200478FE6 /* BMPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BMPlayer.h; path = Models/BMPlayer.h; sourceTree = "<group>"; };
+		72D869EC1836871200478FE6 /* BMPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BMPlayer.m; path = Models/BMPlayer.m; sourceTree = "<group>"; };
+		72D869EE18368B2300478FE6 /* BMJoystick.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMJoystick.h; sourceTree = "<group>"; };
+		72D869EF18368B2300478FE6 /* BMJoystick.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMJoystick.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -273,9 +285,14 @@
 		72D869841835FCFA00478FE6 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				72D869E7183686BE00478FE6 /* Map objects */,
 				72D869B518360CAD00478FE6 /* Environment */,
 				72D8699D183606B800478FE6 /* Abstract */,
 				72D869A71836077700478FE6 /* TMX Objects */,
+				72D869EB1836871200478FE6 /* BMPlayer.h */,
+				72D869EC1836871200478FE6 /* BMPlayer.m */,
+				72D869EE18368B2300478FE6 /* BMJoystick.h */,
+				72D869EF18368B2300478FE6 /* BMJoystick.m */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -430,6 +447,17 @@
 			name = Buttons;
 			sourceTree = "<group>";
 		};
+		72D869E7183686BE00478FE6 /* Map objects */ = {
+			isa = PBXGroup;
+			children = (
+				72D869E4183686B900478FE6 /* BMCharacter.h */,
+				72D869E5183686B900478FE6 /* BMCharacter.m */,
+				72D869E8183686E200478FE6 /* BMBomb.h */,
+				72D869E9183686E200478FE6 /* BMBomb.m */,
+			);
+			name = "Map objects";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -549,8 +577,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				72D869A4183606C600478FE6 /* BMArtificialIntelligence.m in Sources */,
+				72D869ED1836871200478FE6 /* BMPlayer.m in Sources */,
 				72D869AE1836089A00478FE6 /* BMMapCache.m in Sources */,
 				72D869AA1836078D00478FE6 /* BMSpawn.m in Sources */,
+				72D869F018368B2300478FE6 /* BMJoystick.m in Sources */,
 				72D8695F1835FCCE00478FE6 /* BMViewController.m in Sources */,
 				72D869A6183606C600478FE6 /* BMTMXObject.m in Sources */,
 				72D869B918360D1500478FE6 /* BMHudNode.m in Sources */,
@@ -562,8 +592,10 @@
 				72D86997183601AA00478FE6 /* LFCGzipUtility.m in Sources */,
 				72D869B31836090400478FE6 /* BMPathFinder.m in Sources */,
 				72D869931836017A00478FE6 /* PathFinder.m in Sources */,
+				72D869E6183686B900478FE6 /* BMCharacter.m in Sources */,
 				72D869561835FCCE00478FE6 /* BMAppDelegate.m in Sources */,
 				72D8699A183601C300478FE6 /* JSTileMap.m in Sources */,
+				72D869EA183686E200478FE6 /* BMBomb.m in Sources */,
 				72D869B41836090400478FE6 /* BMTiledMap.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
