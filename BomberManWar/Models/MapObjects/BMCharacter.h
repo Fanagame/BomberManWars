@@ -31,8 +31,8 @@ typedef enum BMPlayerState : NSUInteger { kPlayerStateStandby, kPlayerStateDying
 //- (void) spawnAnimated:(BOOL)animated;
 //- (void) spawn:(BMSpawn *)spawn;
 //- (void) spawn:(BMSpawn *)spawn animated:(BOOL)animated;
-//- (void) die;
-//- (void) dropBomb;
+- (void) die;
+- (void) dropBomb;
 //- (void) shootBomb;
 //- (void) grabBonus;
 - (void) move:(BMDirection)direction;

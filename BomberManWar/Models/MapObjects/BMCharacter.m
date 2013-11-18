@@ -9,6 +9,7 @@
 #import "BMCharacter.h"
 #import "BMConstants.h"
 #import "BMPlayer.h"
+#import "BMBomb.h"
 
 NSInteger const kCharacterMovingSpeed = 100;
 CFTimeInterval const kCharacterMovingDuration = 0.5;
@@ -35,6 +36,18 @@ CFTimeInterval const kCharacterMovingDuration = 0.5;
 	self = [super init];
 	
 	if (self) {
+        self.currentBombs = [[NSMutableArray alloc] init];
+        
+        //
+        // LOADING DYNAMIC DATA
+        //
+        
+        self.maxDroppedBombs = 3;
+        
+        //
+        // END LOADING DYNAMIC DATA
+        //
+        
         [self loadAnimations];
         
         [self updateDefaultSprite];
@@ -49,6 +62,7 @@ CFTimeInterval const kCharacterMovingDuration = 0.5;
         [self updatePhysics];
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updatePhysics) name:kCameraZoomChangedNotificationName object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(bombDidExplode:) name:kBombExplodedNotificationName object:nil];
 	}
 	
 	return self;
@@ -197,6 +211,20 @@ CFTimeInterval const kCharacterMovingDuration = 0.5;
     }
 }
 
+- (void) dropBomb {
+    if (self.state == kPlayerStateStandby || self.state == kPlayerStateMoving) {
+        if (self.currentBombs.count >= self.maxDroppedBombs)
+            return;
+        
+        BMBomb *b = [[BMBomb alloc] init];
+        b.owner = self;
+        b.position = self.position;
+        [self.gameScene addNode:b atWorldLayer:BMWorldLayerBelowCharacter];
+        [b startTicking];
+        [self.currentBombs addObject:b];
+    }
+}
+
 - (void) die {
     if (self.state == kPlayerStateStandby) {
         [self removeAllActions];
@@ -208,6 +236,12 @@ CFTimeInterval const kCharacterMovingDuration = 0.5;
             weakSelf.currentDirection = kDirectionNone;
             [weakSelf runAction:[SKAction setTexture:[weakSelf defaultTexture]]];
         }];
+    }
+}
+
+- (void) bombDidExplode:(NSNotification *)notification {
+    if (notification.object) {
+        [self.currentBombs removeObject:notification.object];
     }
 }
 

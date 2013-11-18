@@ -10,9 +10,12 @@
 
 @class BMHudButton;
 
+extern NSString * const kHUDDropBombButtonPressedNotificationName;
+
 @interface BMHudNode : SKNode
 
 @property (nonatomic, strong, readonly) BMHudButton *exitButton;
+@property (nonatomic, strong, readonly) UIButton *dropBombButton;
 
 @property (nonatomic, strong, readonly) SKLabelNode *playerNameLabel;
 @property (nonatomic, strong, readonly) SKLabelNode *playerLivesLabel;

@@ -71,7 +71,6 @@
         
         // Center the camera on the hero spawn point.
         [[BMCamera sharedCamera] setCameraToDefaultZoomLevel];
-//        [[BMCamera sharedCamera] pointCameraToSpawn:self.defaultSpawnPoint];
         
         // Register to important notifications
 //        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playerLivesReachedZero:) name:kLocalPlayerLivesReachedZeroNotificationName object:nil];

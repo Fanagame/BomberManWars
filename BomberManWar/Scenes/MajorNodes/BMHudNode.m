@@ -10,11 +10,12 @@
 #import "BMHudButton.h"
 #import "BMGameScene.h"
 
+NSString * const kHUDDropBombButtonPressedNotificationName = @"kHUDDropBombButtonPressedNotificationName";
+
 @interface BMHudNode ()
 
 @property (nonatomic, strong) BMHudButton *exitButton;
-@property (nonatomic, strong) BMHudButton *placeGroundBuildingButton;
-@property (nonatomic, strong) BMHudButton *placeAirBuildingButton;
+@property (nonatomic, strong) UIButton *dropBombButton;
 
 @property (nonatomic, strong) SKLabelNode *playerNameLabel;
 @property (nonatomic, strong) SKLabelNode *playerSoftCurrencyLabel;
@@ -89,6 +90,13 @@
     self.exitButton.position = CGPointMake(10, 50);
     [self.exitButton addTarget:self action:@selector(didTapExit) forControlEvents:UIControlEventTouchUpInside];
     [self.gameScene.view addSubview:self.exitButton];
+    
+    // Drop bomb buttons
+    self.dropBombButton = [[UIButton alloc] init];
+    [self.dropBombButton setImage:[UIImage imageNamed:@"btn_bomb"] forState:UIControlStateNormal];
+    self.dropBombButton.frame = CGRectMake(self.gameScene.size.width - 64 - 20, self.gameScene.size.height - 64 - 20, 64, 64);
+    [self.dropBombButton addTarget:self action:@selector(didTapDropBomb) forControlEvents:UIControlEventTouchUpInside];
+    [self.gameScene.view addSubview:self.dropBombButton];
 }
 
 - (void) updateLives {
@@ -99,6 +107,10 @@
 
 - (void) didTapExit {
 	[self.gameScene.parentViewController.navigationController popViewControllerAnimated:YES];
+}
+
+- (void) didTapDropBomb {
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHUDDropBombButtonPressedNotificationName object:nil];
 }
 
 @end

@@ -7,11 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		44071DD6183AC02A00B2ABA3 /* BMDeflagration.m in Sources */ = {isa = PBXBuildFile; fileRef = 44071DD5183AC02A00B2ABA3 /* BMDeflagration.m */; };
 		441E42F61839B9AD0074A93A /* BMWall.m in Sources */ = {isa = PBXBuildFile; fileRef = 441E42F51839B9AD0074A93A /* BMWall.m */; };
 		441E42F91839DE1B0074A93A /* Bombs.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 441E42F71839DE1B0074A93A /* Bombs.atlas */; };
 		441E42FC1839E02F0074A93A /* HeroWalk.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 441E42FB1839E02F0074A93A /* HeroWalk.atlas */; };
 		44ADDD5118369B00005B0971 /* BMSpawnAI.m in Sources */ = {isa = PBXBuildFile; fileRef = 44ADDD5018369B00005B0971 /* BMSpawnAI.m */; };
 		44ADDD5318369E73005B0971 /* bomberman-anim-spritesheet.png in Resources */ = {isa = PBXBuildFile; fileRef = 44ADDD5218369E73005B0971 /* bomberman-anim-spritesheet.png */; };
+		44F9D03B183AA5F000C01D2E /* btn_bomb.png in Resources */ = {isa = PBXBuildFile; fileRef = 44F9D039183AA5F000C01D2E /* btn_bomb.png */; };
+		44F9D03C183AA5F000C01D2E /* btn_bomb@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 44F9D03A183AA5F000C01D2E /* btn_bomb@2x.png */; };
 		72D869441835FCCE00478FE6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72D869431835FCCE00478FE6 /* Foundation.framework */; };
 		72D869461835FCCE00478FE6 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72D869451835FCCE00478FE6 /* CoreGraphics.framework */; };
 		72D869481835FCCE00478FE6 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72D869471835FCCE00478FE6 /* UIKit.framework */; };
@@ -79,6 +82,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		44071DD4183AC02A00B2ABA3 /* BMDeflagration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMDeflagration.h; sourceTree = "<group>"; };
+		44071DD5183AC02A00B2ABA3 /* BMDeflagration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMDeflagration.m; sourceTree = "<group>"; };
 		441E42F41839B9AD0074A93A /* BMWall.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BMWall.h; path = Models/TMXObjects/BMWall.h; sourceTree = "<group>"; };
 		441E42F51839B9AD0074A93A /* BMWall.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BMWall.m; path = Models/TMXObjects/BMWall.m; sourceTree = "<group>"; };
 		441E42F71839DE1B0074A93A /* Bombs.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; name = Bombs.atlas; path = Resources/Bombs.atlas; sourceTree = "<group>"; };
@@ -86,6 +91,8 @@
 		44ADDD4F18369B00005B0971 /* BMSpawnAI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BMSpawnAI.h; path = Models/AI/BMSpawnAI.h; sourceTree = "<group>"; };
 		44ADDD5018369B00005B0971 /* BMSpawnAI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BMSpawnAI.m; path = Models/AI/BMSpawnAI.m; sourceTree = "<group>"; };
 		44ADDD5218369E73005B0971 /* bomberman-anim-spritesheet.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bomberman-anim-spritesheet.png"; path = "Resources/bomberman-anim-spritesheet.png"; sourceTree = "<group>"; };
+		44F9D039183AA5F000C01D2E /* btn_bomb.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = btn_bomb.png; path = Resources/UI/btn_bomb.png; sourceTree = "<group>"; };
+		44F9D03A183AA5F000C01D2E /* btn_bomb@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "btn_bomb@2x.png"; path = "Resources/UI/btn_bomb@2x.png"; sourceTree = "<group>"; };
 		72D869401835FCCE00478FE6 /* BomberManWar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BomberManWar.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		72D869431835FCCE00478FE6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		72D869451835FCCE00478FE6 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -200,6 +207,15 @@
 				44ADDD5018369B00005B0971 /* BMSpawnAI.m */,
 			);
 			name = AI;
+			sourceTree = "<group>";
+		};
+		44F9D038183AA5E200C01D2E /* Special buttons */ = {
+			isa = PBXGroup;
+			children = (
+				44F9D039183AA5F000C01D2E /* btn_bomb.png */,
+				44F9D03A183AA5F000C01D2E /* btn_bomb@2x.png */,
+			);
+			name = "Special buttons";
 			sourceTree = "<group>";
 		};
 		72D869371835FCCE00478FE6 = {
@@ -346,6 +362,7 @@
 		72D869871835FD1800478FE6 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				44F9D038183AA5E200C01D2E /* Special buttons */,
 				72D869C71836106300478FE6 /* Buttons */,
 			);
 			name = UI;
@@ -481,6 +498,8 @@
 				72D869E5183686B900478FE6 /* BMCharacter.m */,
 				72D869E8183686E200478FE6 /* BMBomb.h */,
 				72D869E9183686E200478FE6 /* BMBomb.m */,
+				44071DD4183AC02A00B2ABA3 /* BMDeflagration.h */,
+				44071DD5183AC02A00B2ABA3 /* BMDeflagration.m */,
 			);
 			name = "Map objects";
 			sourceTree = "<group>";
@@ -579,11 +598,13 @@
 				72D869D71836107200478FE6 /* btn_circle_blue@2x.png in Resources */,
 				72D869DB1836107200478FE6 /* btn_circle_orange@2x.png in Resources */,
 				72D869E01836107200478FE6 /* btn_rect_red.png in Resources */,
+				44F9D03B183AA5F000C01D2E /* btn_bomb.png in Resources */,
 				441E42F91839DE1B0074A93A /* Bombs.atlas in Resources */,
 				72D869E21836107200478FE6 /* btn_rect_yellow.png in Resources */,
 				72D869C61836100300478FE6 /* tmw_desert_spacing.png in Resources */,
 				72D869501835FCCE00478FE6 /* InfoPlist.strings in Resources */,
 				72D869D61836107200478FE6 /* btn_circle_blue.png in Resources */,
+				44F9D03C183AA5F000C01D2E /* btn_bomb@2x.png in Resources */,
 				72D869E31836107200478FE6 /* btn_rect_yellow@2x.png in Resources */,
 				72D869DE1836107200478FE6 /* btn_rect_green.png in Resources */,
 				441E42FC1839E02F0074A93A /* HeroWalk.atlas in Resources */,
@@ -616,6 +637,7 @@
 				72D869B918360D1500478FE6 /* BMHudNode.m in Sources */,
 				72D869621835FCCE00478FE6 /* BMGameScene.m in Sources */,
 				72D8698B1835FE7900478FE6 /* BMCamera.m in Sources */,
+				44071DD6183AC02A00B2ABA3 /* BMDeflagration.m in Sources */,
 				72D869BC18360DB500478FE6 /* BMHudButton.m in Sources */,
 				72D869521835FCCE00478FE6 /* main.m in Sources */,
 				72D869A5183606C600478FE6 /* BMMapObject.m in Sources */,
