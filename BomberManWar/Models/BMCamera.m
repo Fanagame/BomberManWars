@@ -7,6 +7,7 @@
 //
 
 #import "BMCamera.h"
+#import "BMCharacter.h"
 
 @interface BMCamera () {
     CGSize _cachedWorldSize;
@@ -38,6 +39,11 @@ static BMCamera *_sharedCamera;
 - (CGSize)winSize {
     CGSize winSize = self.world.scene.size;
     
+    if ([self.delegate respondsToSelector:@selector(offsetMapDimension)]) {
+        CGPoint offset = [self.delegate offsetMapDimension];
+        winSize.width += offset.x;
+        winSize.height += offset.y;
+    }
     // invert if the orientation changed
     
     // then return the value
@@ -117,25 +123,25 @@ static BMCamera *_sharedCamera;
 //    
 //    [self pointCameraToPoint:spawn.position];
 //}
-//
-//- (void) pointCameraToUnit:(TDUnit *)unit {
-//    [self pointCameraToUnit:unit trackingEnabled:NO];
-//}
-//
-//- (void) pointCameraToUnit:(TDUnit *)unit trackingEnabled:(BOOL)trackingEnabled {
-//    [self pointCameraToUnit:unit trackingEnabled:trackingEnabled keepUnitWithinEdgeBounds:-1];
-//}
-//
-//- (void) pointCameraToUnit:(TDUnit *)unit trackingEnabled:(BOOL)trackingEnabled keepUnitWithinEdgeBounds:(CGFloat)edgeBound {
-//    
-//    [self zoomOnNode:unit withSizeOnScreenAsPercentage:0.3];
-//    
-//    if (trackingEnabled) {
-//        [self enableTrackingForElement:unit withEdgeBounds:edgeBound];
-//    } else {
-//        [self disableTracking];
-//    }
-//}
+
+- (void) pointCameraToCharacter:(BMCharacter *)character {
+    [self pointCameraToCharacter:character trackingEnabled:NO];
+}
+
+- (void) pointCameraToCharacter:(BMCharacter *)character trackingEnabled:(BOOL)trackingEnabled {
+    [self pointCameraToCharacter:character trackingEnabled:trackingEnabled keepUnitWithinEdgeBounds:-1];
+}
+
+- (void) pointCameraToCharacter:(BMCharacter *)character trackingEnabled:(BOOL)trackingEnabled keepUnitWithinEdgeBounds:(CGFloat)edgeBound {
+    
+    [self zoomOnNode:character withSizeOnScreenAsPercentage:0.1];
+    
+    if (trackingEnabled) {
+        [self enableTrackingForElement:character withEdgeBounds:edgeBound];
+    } else {
+        [self disableTracking];
+    }
+}
 //
 //- (void) pointCameraToBuilding:(id)building {
 //    [self disableTracking];
@@ -200,7 +206,7 @@ static BMCamera *_sharedCamera;
 }
 
 - (void) setCameraZoomLevel:(CGFloat)newDesiredScale {
-    [self disableTracking];
+//    [self disableTracking];
     
     // Let's find out what map position is currently in the center of the screen
     CGPoint centerOfScreenCoordinates = [self.world.scene convertPoint:CGPointMake(0.5, 0.5) toNode:self.world];

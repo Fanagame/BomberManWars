@@ -11,19 +11,19 @@
    </properties>
   </tile>
  </tileset>
- <layer name="Background" width="25" height="24">
+ <layer name="Map" width="25" height="24">
   <data encoding="base64" compression="zlib">
    eJxjZGBgYKIhZgZiTiCWoyHmHgA7GJH8Rw0+NjtAbC6oODX42OwQBGIhIBamEn80PkbjYzQ+RuNjND5G42OwxwfMblphkJ8AvvktZQ==
   </data>
  </layer>
- <objectgroup name="Objects" width="25" height="24">
+ <objectgroup name="MetaObjects" width="25" height="24">
   <object name="SpawnPoint" x="33" y="34" width="76" height="72">
    <properties>
-    <property name="Type" value="SpawnPoint"/>
+    <property name="type" value="SpawnPoint"/>
    </properties>
   </object>
  </objectgroup>
- <layer name="Meta" width="25" height="24">
+ <layer name="MetaLayer" width="25" height="24">
   <data encoding="base64" compression="zlib">
    eJwzZGBgMKQDpiUYCDvQ/UYpfzjbQQswXMNqND6w84ezHbQAwzWsRuMDO38420ELYEgnDABgxj0Q
   </data>

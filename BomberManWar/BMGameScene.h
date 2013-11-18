@@ -30,6 +30,7 @@ typedef void (^BMAssetLoadCompletionHandler)(void);
 @property (nonatomic, assign) CFTimeInterval lastUpdateTimeInterval;
 @property (nonatomic, strong) BMSpawn *defaultSpawnPoint;
 @property (nonatomic, strong) NSMutableArray *spawnPoints;
+@property (nonatomic, strong) NSMutableArray *players;
 
 // Loading/Unloading
 + (void)loadSceneAssetsForMapName:(NSString *)mapName withCompletionHandler:(BMAssetLoadCompletionHandler)callback;
@@ -46,5 +47,12 @@ typedef void (^BMAssetLoadCompletionHandler)(void);
 - (CGPoint) tileCoordinatesForPositionInMap:(CGPoint)position;
 - (CGPoint) tilePositionInMapForCoordinate:(CGPoint)position;
 - (void) convertCoordinatesArrayToPositionsInMapArray:(NSArray *)coords;
+
+
+//
+// Other methods for the game itself
+//
+- (NSUInteger) playersWithCharacterOnMapCount;
+- (NSArray *) playersWithoutCharactersOnMap;
 
 @end

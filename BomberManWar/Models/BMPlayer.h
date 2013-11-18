@@ -7,8 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "BMJoystick.h"
 
-@interface BMPlayer : NSObject
+@class BMCharacter;
+
+@interface BMPlayer : NSObject<BMJoystickDelegate>
 
 @property (nonatomic, strong) NSString *username;
 @property (nonatomic, strong) NSString *displayName;
@@ -16,5 +19,7 @@
 
 @property (nonatomic, assign) NSInteger remainingLives;
 @property (nonatomic, assign) NSInteger score;
+
+@property (nonatomic, strong) BMCharacter *character;
 
 @end

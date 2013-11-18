@@ -14,17 +14,18 @@
 
 @protocol BMJoystickDelegate <NSObject>
 
-- (void)joystick:(BMJoystick *)joystick directionUpdated:(BMDirection *)direction;
+- (void)joystick:(BMJoystick *)joystick directionUpdated:(BMDirection)direction;
 
 @end
 
-@interface BMJoystick : SKNode
+@interface BMJoystick : SKShapeNode
 
-@property (nonatomic, assign) CGPoint origin;
-@property (nonatomic, assign) CGPoint destination;
+@property (nonatomic, readonly) BMDirection currentDirection;
 @property (nonatomic, assign) BOOL enabled;
 @property (nonatomic, weak) id<BMJoystickDelegate> delegate;
 
-- (BMDirection) currentDirection;
++ (instancetype) localPlayerJoystick;
+
+- (void) updateDirectionWithTranslation:(CGPoint)vector;
 
 @end

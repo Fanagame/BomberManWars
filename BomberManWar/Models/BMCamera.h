@@ -9,12 +9,13 @@
 #import <Foundation/Foundation.h>
 #import <SpriteKit/SpriteKit.h>
 
-@class BMCamera;
+@class BMCamera, BMCharacter;
 
 @protocol BMCameraDelegate <NSObject>
 
 - (CGSize) actualMapSizeForCamera:(BMCamera *)camera;
 - (CGSize) mapSizeForCamera:(BMCamera *)camera;
+- (CGPoint) offsetMapDimension;
 
 @end
 
@@ -29,8 +30,8 @@
 - (CGPoint) cameraPosition;
 - (void) pointCameraToPoint:(CGPoint)position;
 //- (void) pointCameraToSpawn:(TDSpawn *)spawn;
-//- (void) pointCameraToUnit:(TDUnit *)unit;
-//- (void) pointCameraToUnit:(TDUnit *)unit trackingEnabled:(BOOL)trackingEnabled;
+- (void) pointCameraToCharacter:(BMCharacter *)character;
+- (void) pointCameraToCharacter:(BMCharacter *)character trackingEnabled:(BOOL)trackingEnabled;
 //- (void) pointCameraToBuilding:(id)building;
 - (void) moveCameraBy:(CGPoint)tran;
 

@@ -6,8 +6,4 @@
 //  Copyright (c) 2013 GREE International Inc. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-
-@protocol BMConstants <NSObject>
-
-@end
+#define SHOW_JOYSTICK

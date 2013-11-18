@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		44ADDD5118369B00005B0971 /* BMSpawnAI.m in Sources */ = {isa = PBXBuildFile; fileRef = 44ADDD5018369B00005B0971 /* BMSpawnAI.m */; };
+		44ADDD5318369E73005B0971 /* bomberman-anim-spritesheet.png in Resources */ = {isa = PBXBuildFile; fileRef = 44ADDD5218369E73005B0971 /* bomberman-anim-spritesheet.png */; };
 		72D869441835FCCE00478FE6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72D869431835FCCE00478FE6 /* Foundation.framework */; };
 		72D869461835FCCE00478FE6 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72D869451835FCCE00478FE6 /* CoreGraphics.framework */; };
 		72D869481835FCCE00478FE6 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72D869471835FCCE00478FE6 /* UIKit.framework */; };
@@ -74,6 +76,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		44ADDD4F18369B00005B0971 /* BMSpawnAI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BMSpawnAI.h; path = Models/AI/BMSpawnAI.h; sourceTree = "<group>"; };
+		44ADDD5018369B00005B0971 /* BMSpawnAI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BMSpawnAI.m; path = Models/AI/BMSpawnAI.m; sourceTree = "<group>"; };
+		44ADDD5218369E73005B0971 /* bomberman-anim-spritesheet.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bomberman-anim-spritesheet.png"; path = "Resources/bomberman-anim-spritesheet.png"; sourceTree = "<group>"; };
 		72D869401835FCCE00478FE6 /* BomberManWar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BomberManWar.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		72D869431835FCCE00478FE6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		72D869451835FCCE00478FE6 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -181,6 +186,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		44ADDD4E18369AEA005B0971 /* AI */ = {
+			isa = PBXGroup;
+			children = (
+				44ADDD4F18369B00005B0971 /* BMSpawnAI.h */,
+				44ADDD5018369B00005B0971 /* BMSpawnAI.m */,
+			);
+			name = AI;
+			sourceTree = "<group>";
+		};
 		72D869371835FCCE00478FE6 = {
 			isa = PBXGroup;
 			children = (
@@ -285,6 +299,7 @@
 		72D869841835FCFA00478FE6 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				44ADDD4E18369AEA005B0971 /* AI */,
 				72D869E7183686BE00478FE6 /* Map objects */,
 				72D869B518360CAD00478FE6 /* Environment */,
 				72D8699D183606B800478FE6 /* Abstract */,
@@ -310,6 +325,7 @@
 		72D869861835FD0F00478FE6 /* Spritesheets */ = {
 			isa = PBXGroup;
 			children = (
+				44ADDD5218369E73005B0971 /* bomberman-anim-spritesheet.png */,
 				72D869BF1836100300478FE6 /* bomberman-test.png */,
 				72D869C01836100300478FE6 /* bombs.png */,
 				72D869C11836100300478FE6 /* meta_tiles.png */,
@@ -538,6 +554,7 @@
 				72D869C51836100300478FE6 /* meta_tiles.png in Resources */,
 				72D869661835FCCE00478FE6 /* Images.xcassets in Resources */,
 				72D869DD1836107200478FE6 /* btn_circle_red@2x.png in Resources */,
+				44ADDD5318369E73005B0971 /* bomberman-anim-spritesheet.png in Resources */,
 				72D869C31836100300478FE6 /* bomberman-test.png in Resources */,
 				72D869D91836107200478FE6 /* btn_circle_green@2x.png in Resources */,
 				72D869DC1836107200478FE6 /* btn_circle_red.png in Resources */,
@@ -590,6 +607,7 @@
 				72D869521835FCCE00478FE6 /* main.m in Sources */,
 				72D869A5183606C600478FE6 /* BMMapObject.m in Sources */,
 				72D86997183601AA00478FE6 /* LFCGzipUtility.m in Sources */,
+				44ADDD5118369B00005B0971 /* BMSpawnAI.m in Sources */,
 				72D869B31836090400478FE6 /* BMPathFinder.m in Sources */,
 				72D869931836017A00478FE6 /* PathFinder.m in Sources */,
 				72D869E6183686B900478FE6 /* BMCharacter.m in Sources */,

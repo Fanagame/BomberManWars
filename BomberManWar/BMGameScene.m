@@ -11,6 +11,9 @@
 #import "BMMapCache.h"
 #import "BMTiledMap.h"
 #import "BMHudNode.h"
+#import "BMSpawn.h"
+#import "BMPlayer.h"
+#import "BMJoystick.h"
 
 @interface BMGameScene () {
     CGSize _cachedMapSizeForCamera;
@@ -42,8 +45,13 @@
         [self addChild:_world];
         
         // Initialize player
+        self.players = [[NSMutableArray alloc] init];
 //        [[TDPlayer localPlayer] setDisplayName:@"Remy"];
 //        [[TDPlayer localPlayer] setRemainingLives:200];
+        BMPlayer *p = [[BMPlayer alloc] init];
+        [[BMJoystick localPlayerJoystick] setDelegate:p];
+        p.displayName = @"Remy";
+        [self.players addObject:p];
         
         // Initialize the world + hud
 		[self buildWorld];
@@ -122,6 +130,42 @@
     _hud = [[BMHudNode alloc] init];
     [self addChild:_hud];
     [_hud didMoveToScene];
+    
+    // Initialize joystick
+    [[BMJoystick localPlayerJoystick] setEnabled:YES];
+//#ifdef SHOW_JOYSTICK
+    [self addChild:[BMJoystick localPlayerJoystick]];
+//#endif
+}
+
+#pragma mark - Player management
+
+- (NSUInteger) playersWithCharacterOnMapCount {
+    NSPredicate *filter = [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
+        if ([evaluatedObject isKindOfClass:[BMPlayer class]]) {
+            BMPlayer *p = (BMPlayer *)evaluatedObject;
+            if (p.character) {
+                return YES;
+            }
+        }
+        return NO;
+    }];
+    
+    return [[self.players filteredArrayUsingPredicate:filter] count];
+}
+
+- (NSArray *) playersWithoutCharactersOnMap {
+    NSPredicate *filter = [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
+        if ([evaluatedObject isKindOfClass:[BMPlayer class]]) {
+            BMPlayer *p = (BMPlayer *)evaluatedObject;
+            if (!p.character) {
+                return YES;
+            }
+        }
+        return NO;
+    }];
+    
+    return [self.players filteredArrayUsingPredicate:filter];
 }
 
 #pragma mark - BMCameraDelegate
@@ -139,6 +183,10 @@
         _cachedMapSizeForCamera = self.backgroundMap.tiledMap.calculateAccumulatedFrame.size;
     }
     return _cachedMapSizeForCamera;
+}
+
+- (CGPoint) offsetMapDimension {
+    return CGPointMake(0, -60);
 }
 
 #pragma mark - Position conversion
@@ -200,9 +248,9 @@
 
 - (void)updateWithTimeSinceLastUpdate:(NSTimeInterval)timeSinceLast {
     // Game logic
-//    for (TDSpawn *spawnPoint in self.spawnPoints) {
-//        [spawnPoint updateWithTimeSinceLastUpdate:timeSinceLast];
-//    }
+    for (BMSpawn *spawnPoint in self.spawnPoints) {
+        [spawnPoint updateWithTimeSinceLastUpdate:timeSinceLast];
+    }
 }
 - (void)didSimulatePhysics {
 	[super didSimulatePhysics];
@@ -213,14 +261,22 @@
 #pragma mark - Event Handling - iOS
 
 - (void) handlePan:(UIPanGestureRecognizer *)pan {
-    // get the translation info
-    CGPoint trans = [pan translationInView:pan.view];
-    
-	// move the camera
-	[[BMCamera sharedCamera] moveCameraBy:trans];
-    
-    // "reset" the translation
-    [pan setTranslation:CGPointZero inView:pan.view];
+    if (pan.state == UIGestureRecognizerStateEnded || pan.state == UIGestureRecognizerStateFailed || pan.state == UIGestureRecognizerStateCancelled) {
+        [BMJoystick localPlayerJoystick].hidden = YES;
+    } else {
+        // get the translation info
+        CGPoint trans = [pan translationInView:pan.view];
+        
+        // Update the joystick
+        [BMJoystick localPlayerJoystick].hidden = NO;
+        [[BMJoystick localPlayerJoystick] updateDirectionWithTranslation:trans];
+        
+        // move the camera
+        //	[[BMCamera sharedCamera] moveCameraBy:trans];
+        
+        // "reset" the translation
+        //    [pan setTranslation:CGPointZero inView:pan.view];
+    }
 }
 
 - (void) handlePinch:(UIPinchGestureRecognizer *)pinch {

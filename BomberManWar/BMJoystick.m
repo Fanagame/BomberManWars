@@ -8,56 +8,75 @@
 
 #import "BMJoystick.h"
 
+@interface BMJoystick () {
+    BMDirection _currentDirection;
+}
+
+@property (nonatomic, assign) BMDirection currentDirection;
+
+@end
+
 @implementation BMJoystick
 
+static BMJoystick *_localPlayerJoystick;
++ (instancetype) localPlayerJoystick {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _localPlayerJoystick = [[BMJoystick alloc] init];
+    });
+    return _localPlayerJoystick;
+}
+
 - (id) init {
-	self = [super init];
-	if (self) {
-		[self addObserver:self forKeyPath:@"origin" options:NSKeyValueObservingOptionNew context:NULL];
-		[self addObserver:self forKeyPath:@"destination" options:NSKeyValueObservingOptionNew context:NULL];
-	}
-	return self;
+    self = [super init];
+    
+    if (self) {
+        self.fillColor = [UIColor purpleColor];
+        self.strokeColor = [UIColor blackColor];
+    }
+    
+    return self;
 }
 
-- (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-	
-//	if ([delegate respondsToSelector:@selector(joystick:directionUpdated:)])
-//		[delegate joystick:self directionUpdated:[self currentDirection]];
+- (void) setCurrentDirection:(BMDirection)currentDirection {
+    if (currentDirection != _currentDirection) {
+        _currentDirection = currentDirection;
+        
+        [self.delegate joystick:self directionUpdated:self.currentDirection];
+    }
 }
 
-- (BMDirection) currentDirection {
-//	if (enabled) {
-//		CGPoint vectorPoint = ccpSub(self.destination, self.origin);
-//		vectorPoint = ccpNormalize(vectorPoint);
-//		
-//		CGFloat angle = CC_RADIANS_TO_DEGREES(ccpToAngle(vectorPoint));
-//		angle += 180.0;
-//		
-//		BMDirection direction = kDirectionUp;
-//		
-//		if (angle >= 315.0 || (angle >= 0 && angle < 45.0)) {
-//			direction = kDirectionLeft;
-//		} else if (angle >= 45.0 && angle < 135.0) {
-//			direction = kDirectionDown;
-//		} else if (angle >= 135.0 && angle < 225.0) {
-//			direction = kDirectionRight;
-//		} // else UP
-//		
-//		return direction;
-//	}
-//	else {
-//		return kDirectionNone;
-//	}
-	return kDirectionNone;
+- (void) setHidden:(BOOL)hidden {
+    if (hidden && hidden != self.hidden) {
+        self.currentDirection = kDirectionNone;
+    }
+    
+    [super setHidden:hidden];
 }
 
-//- (void) draw {
-//	if (self.enabled) {
-//		ccDrawColor4B(255, 0, 0, 255); //Color of the line RGBA
-//		glLineWidth(5.0f); //Stroke width of the line
-//		ccDrawLine(origin, destination);
-//	}
-//}
+- (void) updateDirectionWithTranslation:(CGPoint)vector {
+    if (self.enabled) {
+        CGMutablePathRef path = CGPathCreateMutable();
+        CGPathMoveToPoint(path, NULL, self.position.x, self.position.y);
+        CGPathAddLineToPoint(path, NULL, self.position.x + vector.x, self.position.y - vector.y);
+        self.path = path;
+        CGPathRelease(path);
 
+        CGFloat angle = atan2f(vector.x, vector.y);
+        if (angle < 0) { angle += 2 * M_PI; }
+        
+        if (angle >= M_PI_4 && angle < 3 * M_PI_4) {
+            self.currentDirection = kDirectionRight;
+        } else if (angle >= 3 * M_PI_4 && angle < 5 * M_PI_4) {
+            self.currentDirection = kDirectionUp;
+        } else if (angle >= 5 * M_PI_4 && angle < 7 * M_PI_4) {
+            self.currentDirection = kDirectionLeft;
+        } else {
+            self.currentDirection = kDirectionDown;
+        }
+    } else {
+        self.currentDirection = kDirectionNone;
+    }
+}
 
 @end
