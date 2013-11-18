@@ -17,10 +17,12 @@
 
 @property (nonatomic, strong) TMXLayer *mainLayer;
 @property (nonatomic, strong) TMXObjectGroup *objectsGroup;
+@property (nonatomic, strong) TMXObjectGroup *meshGroup;
 @property (nonatomic, strong) TMXLayer *metaLayer;
 
 @property (nonatomic, strong) NSMutableArray *spawnPoints;
 @property (nonatomic, strong) NSMutableArray *goalPoints;
+@property (nonatomic, strong) NSMutableArray *walls;
 
 - (id) initWithMapNamed:(NSString *)mapName;
 - (CGPoint) tileCoordinatesForPosition:(CGPoint)position;

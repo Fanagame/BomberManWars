@@ -26,5 +26,6 @@
 - (BMGameScene *)gameScene;
 - (void)collidedWith:(SKPhysicsBody *)body contact:(SKPhysicsContact *)contact;
 - (void)stoppedCollidingWith:(SKPhysicsBody *)body contact:(SKPhysicsContact *)contact;
+- (void) updatePhysics;
 
 @end

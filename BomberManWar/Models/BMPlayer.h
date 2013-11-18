@@ -22,4 +22,6 @@
 
 @property (nonatomic, strong) BMCharacter *character;
 
++ (instancetype) localPlayer;
+
 @end

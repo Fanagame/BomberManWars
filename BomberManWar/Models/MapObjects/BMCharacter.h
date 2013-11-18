@@ -17,6 +17,12 @@ typedef enum BMPlayerState : NSUInteger { kPlayerStateStandby, kPlayerStateDying
 @property (nonatomic, assign) BMPlayerState		state;
 @property (nonatomic, assign) BMDirection       currentDirection;
 
+@property (nonatomic, strong) SKSpriteNode      *hitBoxNode;
+@property (nonatomic, readonly) SKAction        *leftMoveAction;
+@property (nonatomic, readonly) SKAction        *rightMoveAction;
+@property (nonatomic, readonly) SKAction        *upMoveAction;
+@property (nonatomic, readonly) SKAction        *downMoveAction;
+
 @property (nonatomic, strong) NSMutableArray	*currentBombs;
 @property (nonatomic, assign) NSUInteger		maxDroppedBombs;
 

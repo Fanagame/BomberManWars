@@ -15,14 +15,8 @@
 @implementation BMSpawn
 
 - (void) setup {
-    self.maxCharacterSpawns = 1; // temp
-    
     self.color = [UIColor redColor];
     self.intelligence = [[BMSpawnAI alloc] initWithCharacter:self andTarget:nil];
-}
-
-- (void) dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark - Public API
@@ -32,9 +26,8 @@
     c.player = player;
     c.position = self.position;
     [self.gameScene addNode:c atWorldLayer:BMWorldLayerCharacter];
-    player.character = c;
     
-    if (![[BMCamera sharedCamera] trackingEnabled]) {
+    if (![[BMCamera sharedCamera] trackingEnabled] && player == [BMPlayer localPlayer]) {
         [[BMCamera sharedCamera] pointCameraToCharacter:c trackingEnabled:YES];
     }
 }

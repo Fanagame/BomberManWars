@@ -17,15 +17,61 @@
   </data>
  </layer>
  <objectgroup name="MetaObjects" width="25" height="24">
-  <object name="SpawnPoint" x="33" y="34" width="76" height="72">
+  <object name="SpawnPoint" x="50" y="53" width="43" height="41">
+   <properties>
+    <property name="type" value="SpawnPoint"/>
+   </properties>
+  </object>
+  <object name="SpawnPoint" x="704" y="57" width="44" height="41">
+   <properties>
+    <property name="type" value="SpawnPoint"/>
+   </properties>
+  </object>
+  <object name="SpawnPoint" x="711" y="690" width="40" height="40">
+   <properties>
+    <property name="type" value="SpawnPoint"/>
+   </properties>
+  </object>
+  <object name="SpawnPoint" x="45" y="686" width="43" height="41">
    <properties>
     <property name="type" value="SpawnPoint"/>
    </properties>
   </object>
  </objectgroup>
- <layer name="MetaLayer" width="25" height="24">
+ <layer name="MetaLayer" width="25" height="24" visible="0">
   <data encoding="base64" compression="zlib">
    eJwzZGBgMKQDpiUYCDvQ/UYpfzjbQQswXMNqND6w84ezHbQAwzWsRuMDO38420ELYEgnDABgxj0Q
   </data>
  </layer>
+ <objectgroup name="Mesh" width="25" height="24">
+  <object x="30" y="2" width="755" height="28"/>
+  <object x="769" y="33" width="30" height="702"/>
+  <object x="2" y="30" width="30" height="709"/>
+  <object x="32" y="738" width="739" height="28"/>
+  <object x="625" y="114" width="63" height="63"/>
+  <object x="496" y="114" width="63" height="61"/>
+  <object x="369" y="115" width="61" height="60"/>
+  <object x="241" y="111" width="62" height="65"/>
+  <object x="113" y="113" width="63" height="65"/>
+  <object x="113" y="241" width="63" height="63"/>
+  <object x="240" y="240" width="64" height="62"/>
+  <object x="369" y="240" width="64" height="63"/>
+  <object x="497" y="239" width="63" height="65"/>
+  <object x="624" y="240" width="64" height="63"/>
+  <object x="625" y="367" width="62" height="65"/>
+  <object x="497" y="367" width="63" height="66"/>
+  <object x="368" y="368" width="64" height="64"/>
+  <object x="240" y="367" width="65" height="66"/>
+  <object x="113" y="369" width="63" height="62"/>
+  <object x="112" y="494" width="64" height="66"/>
+  <object x="240" y="495" width="64" height="64"/>
+  <object x="368" y="495" width="63" height="65"/>
+  <object x="497" y="497" width="63" height="63"/>
+  <object x="625" y="493" width="64" height="68"/>
+  <object x="625" y="624" width="62" height="63"/>
+  <object x="496" y="624" width="64" height="66"/>
+  <object x="369" y="624" width="63" height="63"/>
+  <object x="241" y="625" width="62" height="63"/>
+  <object x="113" y="625" width="63" height="62"/>
+ </objectgroup>
 </map>

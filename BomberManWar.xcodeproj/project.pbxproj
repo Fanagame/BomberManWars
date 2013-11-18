@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		441E42F61839B9AD0074A93A /* BMWall.m in Sources */ = {isa = PBXBuildFile; fileRef = 441E42F51839B9AD0074A93A /* BMWall.m */; };
+		441E42F91839DE1B0074A93A /* Bombs.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 441E42F71839DE1B0074A93A /* Bombs.atlas */; };
+		441E42FC1839E02F0074A93A /* HeroWalk.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 441E42FB1839E02F0074A93A /* HeroWalk.atlas */; };
 		44ADDD5118369B00005B0971 /* BMSpawnAI.m in Sources */ = {isa = PBXBuildFile; fileRef = 44ADDD5018369B00005B0971 /* BMSpawnAI.m */; };
 		44ADDD5318369E73005B0971 /* bomberman-anim-spritesheet.png in Resources */ = {isa = PBXBuildFile; fileRef = 44ADDD5218369E73005B0971 /* bomberman-anim-spritesheet.png */; };
 		72D869441835FCCE00478FE6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72D869431835FCCE00478FE6 /* Foundation.framework */; };
@@ -76,6 +79,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		441E42F41839B9AD0074A93A /* BMWall.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BMWall.h; path = Models/TMXObjects/BMWall.h; sourceTree = "<group>"; };
+		441E42F51839B9AD0074A93A /* BMWall.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BMWall.m; path = Models/TMXObjects/BMWall.m; sourceTree = "<group>"; };
+		441E42F71839DE1B0074A93A /* Bombs.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; name = Bombs.atlas; path = Resources/Bombs.atlas; sourceTree = "<group>"; };
+		441E42FB1839E02F0074A93A /* HeroWalk.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; name = HeroWalk.atlas; path = Resources/HeroWalk.atlas; sourceTree = "<group>"; };
 		44ADDD4F18369B00005B0971 /* BMSpawnAI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BMSpawnAI.h; path = Models/AI/BMSpawnAI.h; sourceTree = "<group>"; };
 		44ADDD5018369B00005B0971 /* BMSpawnAI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BMSpawnAI.m; path = Models/AI/BMSpawnAI.m; sourceTree = "<group>"; };
 		44ADDD5218369E73005B0971 /* bomberman-anim-spritesheet.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bomberman-anim-spritesheet.png"; path = "Resources/bomberman-anim-spritesheet.png"; sourceTree = "<group>"; };
@@ -325,6 +332,8 @@
 		72D869861835FD0F00478FE6 /* Spritesheets */ = {
 			isa = PBXGroup;
 			children = (
+				441E42FB1839E02F0074A93A /* HeroWalk.atlas */,
+				441E42F71839DE1B0074A93A /* Bombs.atlas */,
 				44ADDD5218369E73005B0971 /* bomberman-anim-spritesheet.png */,
 				72D869BF1836100300478FE6 /* bomberman-test.png */,
 				72D869C01836100300478FE6 /* bombs.png */,
@@ -407,6 +416,8 @@
 			children = (
 				72D869A81836078D00478FE6 /* BMSpawn.h */,
 				72D869A91836078D00478FE6 /* BMSpawn.m */,
+				441E42F41839B9AD0074A93A /* BMWall.h */,
+				441E42F51839B9AD0074A93A /* BMWall.m */,
 			);
 			name = "TMX Objects";
 			sourceTree = "<group>";
@@ -568,12 +579,14 @@
 				72D869D71836107200478FE6 /* btn_circle_blue@2x.png in Resources */,
 				72D869DB1836107200478FE6 /* btn_circle_orange@2x.png in Resources */,
 				72D869E01836107200478FE6 /* btn_rect_red.png in Resources */,
+				441E42F91839DE1B0074A93A /* Bombs.atlas in Resources */,
 				72D869E21836107200478FE6 /* btn_rect_yellow.png in Resources */,
 				72D869C61836100300478FE6 /* tmw_desert_spacing.png in Resources */,
 				72D869501835FCCE00478FE6 /* InfoPlist.strings in Resources */,
 				72D869D61836107200478FE6 /* btn_circle_blue.png in Resources */,
 				72D869E31836107200478FE6 /* btn_rect_yellow@2x.png in Resources */,
 				72D869DE1836107200478FE6 /* btn_rect_green.png in Resources */,
+				441E42FC1839E02F0074A93A /* HeroWalk.atlas in Resources */,
 				72D869C41836100300478FE6 /* bombs.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -608,6 +621,7 @@
 				72D869A5183606C600478FE6 /* BMMapObject.m in Sources */,
 				72D86997183601AA00478FE6 /* LFCGzipUtility.m in Sources */,
 				44ADDD5118369B00005B0971 /* BMSpawnAI.m in Sources */,
+				441E42F61839B9AD0074A93A /* BMWall.m in Sources */,
 				72D869B31836090400478FE6 /* BMPathFinder.m in Sources */,
 				72D869931836017A00478FE6 /* PathFinder.m in Sources */,
 				72D869E6183686B900478FE6 /* BMCharacter.m in Sources */,

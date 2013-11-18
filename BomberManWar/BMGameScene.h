@@ -30,6 +30,7 @@ typedef void (^BMAssetLoadCompletionHandler)(void);
 @property (nonatomic, assign) CFTimeInterval lastUpdateTimeInterval;
 @property (nonatomic, strong) BMSpawn *defaultSpawnPoint;
 @property (nonatomic, strong) NSMutableArray *spawnPoints;
+@property (nonatomic, strong) NSMutableArray *walls;
 @property (nonatomic, strong) NSMutableArray *players;
 
 // Loading/Unloading

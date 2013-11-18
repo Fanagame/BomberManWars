@@ -18,13 +18,11 @@
         BMSpawn *sp = (BMSpawn *)self.character;
         
         // TEMP
-        if (sp.maxCharacterSpawns > [sp.gameScene playersWithCharacterOnMapCount]) {
-            NSArray *playersToSpawn = [sp.gameScene playersWithoutCharactersOnMap];
-            BMPlayer *nextPlayer = [playersToSpawn lastObject];
-            
-            if (nextPlayer) {
-                [sp spawnCharacterForPlayer:nextPlayer];
-            }
+        NSArray *playersToSpawn = [sp.gameScene playersWithoutCharactersOnMap];
+        BMPlayer *nextPlayer = [playersToSpawn lastObject];
+        
+        if (nextPlayer) {
+            [sp spawnCharacterForPlayer:nextPlayer];
         }
     }
 }

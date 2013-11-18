@@ -10,11 +10,11 @@
 #import <SpriteKit/SpriteKit.h>
 #import "BMTMXObject.h"
 
-@class BMPlayer;
+@class BMPlayer, BMCharacter;
 
 @interface BMSpawn : BMTMXObject
 
-@property (nonatomic, assign) NSInteger maxCharacterSpawns;
+@property (nonatomic, weak) BMCharacter *character;
 
 - (void) spawnCharacterForPlayer:(BMPlayer *)player;
 

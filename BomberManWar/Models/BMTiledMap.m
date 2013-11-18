@@ -8,11 +8,13 @@
 
 #import "BMTiledMap.h"
 #import "BMSpawn.h"
+#import "BMWall.h"
 
 NSString * const kTiledMapObjectType_Spawn = @"SpawnPoint";
 
 NSString * const kTiledMapLayerName_Main = @"Map";
 NSString * const kTiledMapLayerName_Objects = @"MetaObjects";
+NSString * const kTiledMapLayerName_Mesh = @"Mesh";
 NSString * const kTiledMapLayerName_Meta = @"MetaLayer";
 
 NSString * const kTiledMapTilePropertyName_Walkable = @"Walkable";
@@ -31,6 +33,7 @@ NSString * const kTiledMapTilePropertyName_Walkable = @"Walkable";
         self.tiledMap = [JSTileMap mapNamed:self.fileName];
         self.goalPoints = [[NSMutableArray alloc] init];
         self.spawnPoints = [[NSMutableArray alloc] init];
+        self.walls = [[NSMutableArray alloc] init];
         
         if (self.tiledMap) {
             self.mainLayer = [self.tiledMap layerNamed:kTiledMapLayerName_Main];
@@ -46,6 +49,14 @@ NSString * const kTiledMapTilePropertyName_Walkable = @"Walkable";
                     }
                 }
             }
+            
+            self.meshGroup = [self.tiledMap groupNamed:kTiledMapLayerName_Mesh];
+            if (self.meshGroup) {
+                for (NSDictionary *object in self.meshGroup.objects) {
+                    [self.walls addObject:[[BMWall alloc] initWithDictionary:object]];
+                    [self.tiledMap addChild:self.walls.lastObject];
+                }
+            }
 
             [self addChild:self.tiledMap];
             
@@ -57,6 +68,7 @@ NSString * const kTiledMapTilePropertyName_Walkable = @"Walkable";
             NSLog(@"Tile size: %f x %f", self.tiledMap.tileSize.width, self.tiledMap.tileSize.height);
             NSLog(@"Spawn points: %d", self.spawnPoints.count);
             NSLog(@"Goal points: %d", self.goalPoints.count);
+            NSLog(@"Wall rects: %d", self.walls.count);
             NSLog(@"========================");
 #endif
         }

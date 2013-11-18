@@ -17,6 +17,8 @@
     if (self) {
         [self setValuesForKeysWithDictionary:dictionary];
         [self setup];
+        [self updatePhysics];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updatePhysics) name:kCameraZoomChangedNotificationName object:nil];
     }
     
     return self;

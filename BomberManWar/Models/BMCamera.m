@@ -9,6 +9,8 @@
 #import "BMCamera.h"
 #import "BMCharacter.h"
 
+NSString * const kCameraZoomChangedNotificationName = @"kCameraZoomChangedNotificationName";
+
 @interface BMCamera () {
     CGSize _cachedWorldSize;
 }
@@ -216,7 +218,10 @@ static BMCamera *_sharedCamera;
 	
 	// Change the zoom (scale)
 	if (newDesiredScale != self.cameraZoomLevel) {
-		[self.world setScale:newDesiredScale];
+//        [self.world setScale:1];
+        [self.world runAction:[SKAction scaleTo:newDesiredScale duration:0.5] completion:^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:kCameraZoomChangedNotificationName object:nil];
+        }];
 		
 		// Then point the camera back to that same center position!
 		[self pointCameraToPoint:centerOfScreenCoordinates];

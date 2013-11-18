@@ -19,6 +19,8 @@
 
 @end
 
+extern NSString * const kCameraZoomChangedNotificationName;
+
 @interface BMCamera : NSObject
 
 @property (nonatomic, weak) SKNode *world;

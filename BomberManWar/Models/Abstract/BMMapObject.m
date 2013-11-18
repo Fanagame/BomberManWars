@@ -15,7 +15,7 @@
     self = [super init];
     
     if (self) {
-        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updatePhysics) name:kCameraZoomChangedNotificationName object:nil];
     }
     
     return self;
@@ -29,6 +29,16 @@
     } else {
         return nil;
     }
+}
+
+- (void) dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+#pragma mark - Physics
+
+- (void) updatePhysics {
+    // override in subclasses
 }
 
 #pragma mark - Loop Update

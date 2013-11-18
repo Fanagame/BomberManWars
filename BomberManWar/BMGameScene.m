@@ -46,12 +46,21 @@
         
         // Initialize player
         self.players = [[NSMutableArray alloc] init];
-//        [[TDPlayer localPlayer] setDisplayName:@"Remy"];
-//        [[TDPlayer localPlayer] setRemainingLives:200];
-        BMPlayer *p = [[BMPlayer alloc] init];
+        BMPlayer *p = [BMPlayer localPlayer];
         [[BMJoystick localPlayerJoystick] setDelegate:p];
         p.displayName = @"Remy";
         [self.players addObject:p];
+        
+        /*
+         * FAKE OTHER PLAYERS
+         */
+        BMPlayer *p2 = [[BMPlayer alloc] init];
+        p2.displayName = @"Player2";
+        [self.players addObject:p2];
+        
+        /*
+         * END FAKE OTHER PLAYERS
+         */
         
         // Initialize the world + hud
 		[self buildWorld];
@@ -104,10 +113,10 @@
     
     [self addBackgroundTiles];
     [self addSpawnPoints];
+    [self addWalls];
 	
-    self.world.physicsBody = [SKPhysicsBody bodyWithEdgeLoopFromRect:self.world.calculateAccumulatedFrame];
+//    self.world.physicsBody = [SKPhysicsBody bodyWithEdgeLoopFromRect:self.world.calculateAccumulatedFrame];
 //    self.world.physicsBody.categoryBitMask = kPhysicsCategory_World;
-    self.world.physicsBody.collisionBitMask = 0; // collide with nothing
 //    self.world.physicsBody.contactTestBitMask = kPhysicsCategory_Bullet;
 }
 
@@ -122,6 +131,10 @@
     if (self.spawnPoints.count > 0) {
         self.defaultSpawnPoint = self.spawnPoints[0];
     }
+}
+
+- (void)addWalls {
+    self.walls = self.backgroundMap.walls;
 }
 
 #pragma mark - HUD and Scores
