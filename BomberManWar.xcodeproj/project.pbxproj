@@ -574,6 +574,9 @@
 				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = "GREE International Inc.";
 				TargetAttributes = {
+					72D8693F1835FCCE00478FE6 = {
+						DevelopmentTeam = 84Z9446XM8;
+					};
 					72D8696A1835FCCE00478FE6 = {
 						TestTargetID = 72D8693F1835FCCE00478FE6;
 					};
