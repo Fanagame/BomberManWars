@@ -18,4 +18,7 @@
 - (void) deflagrate; // is that a word?
 - (void) deflagrateWithCompletionHandler:(void(^)())onComplete;
 
+//TODO: find a nicer way to do that
+- (void) cameraScaleDidUpdate;
+
 @end

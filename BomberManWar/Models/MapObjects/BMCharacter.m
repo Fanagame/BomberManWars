@@ -10,6 +10,8 @@
 #import "BMConstants.h"
 #import "BMPlayer.h"
 #import "BMBomb.h"
+#import "BMCharacterAI.h"
+#import "BMPathFinder.h"
 
 NSInteger const kCharacterMovingSpeed = 100;
 CFTimeInterval const kCharacterMovingDuration = 0.5;
@@ -71,6 +73,10 @@ CFTimeInterval const kCharacterMovingDuration = 0.5;
 - (void) setPlayer:(BMPlayer *)player {
     _player = player;
     player.character = self;
+    
+    if (player.isAI) {
+        self.intelligence = [[BMCharacterAI alloc] initWithCharacter:self andTarget:nil];
+    }
 }
 
 - (void) loadAnimations {
@@ -118,9 +124,14 @@ CFTimeInterval const kCharacterMovingDuration = 0.5;
     if (self.gameScene.world) {
         SKNode *hitBoxNode = self;
         
-        hitBoxNode.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:CGSizeMake(hitBoxNode.calculateAccumulatedFrame.size.width * self.gameScene.world.xScale, hitBoxNode.calculateAccumulatedFrame.size.height * self.gameScene.world.yScale)];
+        hitBoxNode.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:hitBoxNode.physicsSize];
         hitBoxNode.physicsBody.categoryBitMask = kPhysicsCategory_Character;
         hitBoxNode.physicsBody.collisionBitMask = kPhysicsCategory_Wall;
+#ifdef CHAR_LOCAL_PLAYER_IS_INVINCIBLE
+        if (self.player != [BMPlayer localPlayer]) {
+            hitBoxNode.physicsBody.contactTestBitMask = kPhysicsCategory_Deflagration;
+        }
+#endif
         hitBoxNode.physicsBody.allowsRotation = NO;
     }
 }
@@ -181,13 +192,71 @@ CFTimeInterval const kCharacterMovingDuration = 0.5;
     return nil;
 }
 
+- (CGPoint) bombPositionForBomb:(BMBomb *)bomb {
+    CGPoint pos = self.position;
+    
+#ifdef CHAR_PLACE_BOMB_BEHIND
+    switch (self.currentDirection) {
+        case kDirectionUp:
+            pos = CGPointMake(self.position.x, self.position.y - (self.size.height * self.anchorPoint.y) - (bomb.size.height * bomb.anchorPoint.y));
+            break;
+        case kDirectionLeft:
+            pos = CGPointMake(self.position.x + (self.size.width * self.anchorPoint.x) + (bomb.size.width * bomb.anchorPoint.x), self.position.y);
+            break;
+        case kDirectionRight:
+            pos = CGPointMake(self.position.x - (self.size.width * self.anchorPoint.x) - (bomb.size.width * bomb.anchorPoint.x), self.position.y);
+            break;
+        default:
+            pos = CGPointMake(self.position.x, self.position.y + (self.size.height * self.anchorPoint.y) + (bomb.size.height * bomb.anchorPoint.y));
+            break;
+    }
+#endif
+    
+    return pos;
+}
+
 #pragma mark - Public API
+
+- (void) moveTo:(BMMapObject *)mapObject {
+    if (self.state != kPlayerCalculatingPath) {
+        self.state = kPlayerCalculatingPath;
+        
+        CGPoint selfCoord = [self.gameScene tileCoordinatesForPositionInMap:self.position];
+        CGPoint destCoord = [self.gameScene tileCoordinatesForPositionInMap:mapObject.position];
+        
+        [[BMPathFinder sharedPathCache] pathInExplorableWorld:self.gameScene fromA:selfCoord toB:destCoord usingDiagonal:NO onSuccess:^(BMPath *path) {
+            __weak BMCharacter *weakSelf = self;
+            weakSelf.state = kPlayerStateStandby;
+
+            if (path.positionsPathArray.count > 0) {
+                NSMutableArray *moveActions = [[NSMutableArray alloc] init];
+                for (PathNode *node in path.positionsPathArray) {
+                    SKAction *action = [SKAction moveTo:node.position duration:0.5];
+                    [moveActions addObject:action];
+                }
+                
+                weakSelf.state = kPlayerStateMoving;
+                [self runAction:[SKAction sequence:moveActions] completion:^{
+                    weakSelf.intelligence.target = nil;
+                    weakSelf.state = kPlayerStateStandby;
+                }];
+            } else {
+                self.intelligence.target = nil;
+            }
+        }];
+    }
+}
 
 - (void) move:(BMDirection)direction {
     SKAction *moveAction = nil;
     
     if (direction != self.currentDirection) {
         self.currentDirection = direction;
+        
+        if (direction == kDirectionNone) {
+            [self removeAllActions];
+            return;
+        }
         
         if (self.state == kPlayerStateStandby) {
             if (direction == kDirectionRight) {
@@ -218,15 +287,16 @@ CFTimeInterval const kCharacterMovingDuration = 0.5;
         
         BMBomb *b = [[BMBomb alloc] init];
         b.owner = self;
-        b.position = self.position;
+        b.position = [self bombPositionForBomb:b];
         [self.gameScene addNode:b atWorldLayer:BMWorldLayerBelowCharacter];
+        [b updatePhysics];
         [b startTicking];
         [self.currentBombs addObject:b];
     }
 }
 
 - (void) die {
-    if (self.state == kPlayerStateStandby) {
+    if (self.state != kPlayerStateDying && self.state != kPlayerStateRespawning) {
         [self removeAllActions];
         self.state = kPlayerStateDying;
         
@@ -235,6 +305,7 @@ CFTimeInterval const kCharacterMovingDuration = 0.5;
             weakSelf.state = kPlayerStateStandby;
             weakSelf.currentDirection = kDirectionNone;
             [weakSelf runAction:[SKAction setTexture:[weakSelf defaultTexture]]];
+            weakSelf.intelligence.target = nil;
         }];
     }
 }

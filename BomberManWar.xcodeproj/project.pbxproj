@@ -8,9 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		44071DD6183AC02A00B2ABA3 /* BMDeflagration.m in Sources */ = {isa = PBXBuildFile; fileRef = 44071DD5183AC02A00B2ABA3 /* BMDeflagration.m */; };
+		44071DDA183ADD3400B2ABA3 /* SKNode+physicsSize.m in Sources */ = {isa = PBXBuildFile; fileRef = 44071DD9183ADD3400B2ABA3 /* SKNode+physicsSize.m */; };
+		44071DDC183AF25900B2ABA3 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 44071DDB183AF25900B2ABA3 /* GameKit.framework */; };
 		441E42F61839B9AD0074A93A /* BMWall.m in Sources */ = {isa = PBXBuildFile; fileRef = 441E42F51839B9AD0074A93A /* BMWall.m */; };
 		441E42F91839DE1B0074A93A /* Bombs.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 441E42F71839DE1B0074A93A /* Bombs.atlas */; };
 		441E42FC1839E02F0074A93A /* HeroWalk.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 441E42FB1839E02F0074A93A /* HeroWalk.atlas */; };
+		447BD222183AFC4400FCFD3A /* BMCharacterAI.m in Sources */ = {isa = PBXBuildFile; fileRef = 447BD221183AFC4400FCFD3A /* BMCharacterAI.m */; };
 		44ADDD5118369B00005B0971 /* BMSpawnAI.m in Sources */ = {isa = PBXBuildFile; fileRef = 44ADDD5018369B00005B0971 /* BMSpawnAI.m */; };
 		44ADDD5318369E73005B0971 /* bomberman-anim-spritesheet.png in Resources */ = {isa = PBXBuildFile; fileRef = 44ADDD5218369E73005B0971 /* bomberman-anim-spritesheet.png */; };
 		44F9D03B183AA5F000C01D2E /* btn_bomb.png in Resources */ = {isa = PBXBuildFile; fileRef = 44F9D039183AA5F000C01D2E /* btn_bomb.png */; };
@@ -84,10 +87,15 @@
 /* Begin PBXFileReference section */
 		44071DD4183AC02A00B2ABA3 /* BMDeflagration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMDeflagration.h; sourceTree = "<group>"; };
 		44071DD5183AC02A00B2ABA3 /* BMDeflagration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMDeflagration.m; sourceTree = "<group>"; };
+		44071DD8183ADD3400B2ABA3 /* SKNode+physicsSize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SKNode+physicsSize.h"; sourceTree = "<group>"; };
+		44071DD9183ADD3400B2ABA3 /* SKNode+physicsSize.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SKNode+physicsSize.m"; sourceTree = "<group>"; };
+		44071DDB183AF25900B2ABA3 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
 		441E42F41839B9AD0074A93A /* BMWall.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BMWall.h; path = Models/TMXObjects/BMWall.h; sourceTree = "<group>"; };
 		441E42F51839B9AD0074A93A /* BMWall.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BMWall.m; path = Models/TMXObjects/BMWall.m; sourceTree = "<group>"; };
 		441E42F71839DE1B0074A93A /* Bombs.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; name = Bombs.atlas; path = Resources/Bombs.atlas; sourceTree = "<group>"; };
 		441E42FB1839E02F0074A93A /* HeroWalk.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; name = HeroWalk.atlas; path = Resources/HeroWalk.atlas; sourceTree = "<group>"; };
+		447BD220183AFC4400FCFD3A /* BMCharacterAI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BMCharacterAI.h; path = Models/AI/BMCharacterAI.h; sourceTree = "<group>"; };
+		447BD221183AFC4400FCFD3A /* BMCharacterAI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BMCharacterAI.m; path = Models/AI/BMCharacterAI.m; sourceTree = "<group>"; };
 		44ADDD4F18369B00005B0971 /* BMSpawnAI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BMSpawnAI.h; path = Models/AI/BMSpawnAI.h; sourceTree = "<group>"; };
 		44ADDD5018369B00005B0971 /* BMSpawnAI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BMSpawnAI.m; path = Models/AI/BMSpawnAI.m; sourceTree = "<group>"; };
 		44ADDD5218369E73005B0971 /* bomberman-anim-spritesheet.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bomberman-anim-spritesheet.png"; path = "Resources/bomberman-anim-spritesheet.png"; sourceTree = "<group>"; };
@@ -179,6 +187,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				44071DDC183AF25900B2ABA3 /* GameKit.framework in Frameworks */,
 				72D8699C1836034800478FE6 /* libz.dylib in Frameworks */,
 				72D869461835FCCE00478FE6 /* CoreGraphics.framework in Frameworks */,
 				72D869481835FCCE00478FE6 /* UIKit.framework in Frameworks */,
@@ -200,11 +209,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		44071DD7183ADD1B00B2ABA3 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				44071DD8183ADD3400B2ABA3 /* SKNode+physicsSize.h */,
+				44071DD9183ADD3400B2ABA3 /* SKNode+physicsSize.m */,
+			);
+			name = Categories;
+			sourceTree = "<group>";
+		};
 		44ADDD4E18369AEA005B0971 /* AI */ = {
 			isa = PBXGroup;
 			children = (
 				44ADDD4F18369B00005B0971 /* BMSpawnAI.h */,
 				44ADDD5018369B00005B0971 /* BMSpawnAI.m */,
+				447BD220183AFC4400FCFD3A /* BMCharacterAI.h */,
+				447BD221183AFC4400FCFD3A /* BMCharacterAI.m */,
 			);
 			name = AI;
 			sourceTree = "<group>";
@@ -240,6 +260,7 @@
 		72D869421835FCCE00478FE6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				44071DDB183AF25900B2ABA3 /* GameKit.framework */,
 				72D8699B1836034800478FE6 /* libz.dylib */,
 				72D869431835FCCE00478FE6 /* Foundation.framework */,
 				72D869451835FCCE00478FE6 /* CoreGraphics.framework */,
@@ -256,6 +277,7 @@
 				72D86990183600FA00478FE6 /* BMConstants.h */,
 				72D8698F183600BA00478FE6 /* BMEnums.h */,
 				72D869AB1836088D00478FE6 /* Caches */,
+				44071DD7183ADD1B00B2ABA3 /* Categories */,
 				72D8698C1835FEC200478FE6 /* Libraries */,
 				72D869841835FCFA00478FE6 /* Models */,
 				72D869851835FD0700478FE6 /* Resources */,
@@ -641,9 +663,11 @@
 				72D869BC18360DB500478FE6 /* BMHudButton.m in Sources */,
 				72D869521835FCCE00478FE6 /* main.m in Sources */,
 				72D869A5183606C600478FE6 /* BMMapObject.m in Sources */,
+				447BD222183AFC4400FCFD3A /* BMCharacterAI.m in Sources */,
 				72D86997183601AA00478FE6 /* LFCGzipUtility.m in Sources */,
 				44ADDD5118369B00005B0971 /* BMSpawnAI.m in Sources */,
 				441E42F61839B9AD0074A93A /* BMWall.m in Sources */,
+				44071DDA183ADD3400B2ABA3 /* SKNode+physicsSize.m in Sources */,
 				72D869B31836090400478FE6 /* BMPathFinder.m in Sources */,
 				72D869931836017A00478FE6 /* PathFinder.m in Sources */,
 				72D869E6183686B900478FE6 /* BMCharacter.m in Sources */,
@@ -787,6 +811,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "BomberManWar/BomberManWar-Prefix.pch";
 				INFOPLIST_FILE = "BomberManWar/BomberManWar-Info.plist";
@@ -801,6 +826,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "BomberManWar/BomberManWar-Prefix.pch";
 				INFOPLIST_FILE = "BomberManWar/BomberManWar-Info.plist";

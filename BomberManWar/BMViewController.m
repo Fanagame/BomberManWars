@@ -21,9 +21,18 @@
     SKView * skView = (SKView *)self.view;
     skView.showsFPS = YES;
     skView.showsNodeCount = YES;
+}
+
+- (void) viewDidAppear:(BOOL)animated {
+    // Create and configure the scene.
+//	[self showGameCenter];
+    [self startGame];
+}
+
+- (void) startGame {
+    SKView * skView = (SKView *)self.view;
     
-	// Create and configure the scene.
-	__weak BMViewController *weakSelf = self;
+    __weak BMViewController *weakSelf = self;
     [BMGameScene loadSceneAssetsForMapName:DEFAULT_MAP_NAME withCompletionHandler:^{
         BMGameScene * scene = [[BMGameScene alloc] initWithSize:skView.bounds.size andMapName:DEFAULT_MAP_NAME];
         scene.scaleMode = SKSceneScaleModeAspectFill;
@@ -32,13 +41,6 @@
         // Present the scene.
         [skView presentScene:scene];
     }];
-	
-    // Create and configure the scene.
-    SKScene * scene = [BMGameScene sceneWithSize:skView.bounds.size];
-    scene.scaleMode = SKSceneScaleModeAspectFill;
-    
-    // Present the scene.
-    [skView presentScene:scene];
 }
 
 - (BOOL)shouldAutorotate
@@ -65,6 +67,23 @@
 	[super viewDidDisappear:animated];
 	
 	[BMGameScene releaseSceneAssetsForMapName:DEFAULT_MAP_NAME];
+}
+
+- (void) showGameCenter
+{
+    GKGameCenterViewController *gameCenterController = [[GKGameCenterViewController alloc] init];
+    if (gameCenterController != nil)
+    {
+        gameCenterController.gameCenterDelegate = self;
+        [self presentViewController: gameCenterController animated: YES completion:nil];
+    }
+}
+
+- (void)gameCenterViewControllerDidFinish:(GKGameCenterViewController *)gameCenterViewController
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+    
+    [self startGame];
 }
 
 @end

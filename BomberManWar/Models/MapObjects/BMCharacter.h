@@ -8,9 +8,9 @@
 
 #import "BMMapObject.h"
 
-typedef enum BMPlayerState : NSUInteger { kPlayerStateStandby, kPlayerStateDying, kPlayerStateRespawning, kPlayerStateMoving } BMPlayerState;
+typedef enum BMPlayerState : NSUInteger { kPlayerStateStandby, kPlayerStateDying, kPlayerStateRespawning, kPlayerStateMoving, kPlayerCalculatingPath } BMPlayerState;
 
-@class BMSpawn, BMPlayer;
+@class BMSpawn, BMPlayer, BMMapObject;
 
 @interface BMCharacter : BMMapObject
 
@@ -35,6 +35,7 @@ typedef enum BMPlayerState : NSUInteger { kPlayerStateStandby, kPlayerStateDying
 - (void) dropBomb;
 //- (void) shootBomb;
 //- (void) grabBonus;
+- (void) moveTo:(BMMapObject *)mapObject;
 - (void) move:(BMDirection)direction;
 
 @end

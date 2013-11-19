@@ -14,6 +14,10 @@
 #import "BMSpawn.h"
 #import "BMPlayer.h"
 #import "BMJoystick.h"
+#import "BMCharacter.h"
+#import "BMConstants.h"
+#import "BMWall.h"
+#import "BMConstants.h"
 
 @interface BMGameScene () {
     CGSize _cachedMapSizeForCamera;
@@ -56,6 +60,7 @@
          */
         BMPlayer *p2 = [[BMPlayer alloc] init];
         p2.displayName = @"Player2";
+        p2.isAI = YES;
         [self.players addObject:p2];
         
         /*
@@ -145,9 +150,9 @@
     
     // Initialize joystick
     [[BMJoystick localPlayerJoystick] setEnabled:YES];
-//#ifdef SHOW_JOYSTICK
+#ifdef SHOW_JOYSTICK
     [self addChild:[BMJoystick localPlayerJoystick]];
-//#endif
+#endif
 }
 
 #pragma mark - Player management
@@ -214,6 +219,7 @@
     __block BMMapObject *object = nil;
     
     [self.physicsWorld enumerateBodiesAtPoint:position usingBlock:^(SKPhysicsBody *body, BOOL *stop) {
+        object = (BMMapObject *)body.node;
 //        if (body.categoryBitMask != kPhysicsCategory_BuildingRange && body.categoryBitMask != kPhysicsCategory_Bullet) {
 //            if ([body.node isKindOfClass:[TDMapObject class]]) {
 //                object = (TDMapObject *)body.node;
@@ -263,6 +269,10 @@
     for (BMSpawn *spawnPoint in self.spawnPoints) {
         [spawnPoint updateWithTimeSinceLastUpdate:timeSinceLast];
     }
+    
+    for (BMPlayer *player in self.players) {
+        [player.character updateWithTimeSinceLastUpdate:timeSinceLast];
+    }
 }
 - (void)didSimulatePhysics {
 	[super didSimulatePhysics];
@@ -304,11 +314,11 @@
 }
 
 - (void) handleTap:(UITapGestureRecognizer *)tap {
-    if (tap.state == UIGestureRecognizerStateEnded) {
-        CGPoint position = [tap locationInView:tap.view];
-        position = [self convertPointFromViewToMapPosition:position];
+//    if (tap.state == UIGestureRecognizerStateEnded) {
+//        CGPoint position = [tap locationInView:tap.view];
+//        position = [self convertPointFromViewToMapPosition:position];
 		
-        BMMapObject *tappedItem = [self mapObjectAtPositionInMap:position];
+//        BMMapObject *tappedItem = [self mapObjectAtPositionInMap:position];
         
 //        if ([tappedItem isKindOfClass:[TDBaseBuilding class]]) {
 //            // Show popup?
@@ -319,7 +329,7 @@
 //        } else if (!tappedItem) { // if we just tapped on the world
 //
 //        }
-    }
+//    }
 }
 
 #pragma mark - Explorable world delegate
@@ -330,7 +340,16 @@
     if (coordinates.x < 0 || coordinates.x > self.backgroundMap.tiledMap.mapSize.width - 1 || coordinates.y < 0 || coordinates.y > self.backgroundMap.tiledMap.mapSize.height - 1) {
         return NO;
     }
-	
+    
+    CGPoint pos = [self tilePositionInMapForCoordinate:coordinates];
+    CGPoint scenePos = [self convertPoint:pos fromNode:self.world];
+    
+    SKPhysicsBody *body = [self.physicsWorld bodyAtPoint:scenePos];
+    if (body && body.categoryBitMask == kPhysicsCategory_Wall) {
+        walkable = NO;
+    }
+
+    
 //#ifndef kTDGameScene_DISABLE_WALKABLE_CHECK
 //    if (self.backgroundMap.mainLayer.layerInfo) {
 //        TMXLayerInfo *layerInfo = self.backgroundMap.mainLayer.layerInfo;

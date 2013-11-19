@@ -8,6 +8,7 @@
 
 #import "BMBomb.h"
 #import "BMDeflagration.h"
+#import "BMConstants.h"
 
 #define TICKING_ANIMATION_SPEED 0.25
 
@@ -35,7 +36,7 @@ NSString * const kBombExplodedNotificationName = @"kBombExplodedNotificationName
         //
         
         self.deflagrationRange = 3;
-        self.timeBeforeExploding = 1;
+        self.timeBeforeExploding = 3;
         self.state = kBombStateStandby;
         
         //
@@ -44,6 +45,9 @@ NSString * const kBombExplodedNotificationName = @"kBombExplodedNotificationName
         
         [self resetDefaultTexture];
         self.size = self.texture.size;
+        
+        [self updatePhysics];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updatePhysics) name:kCameraZoomChangedNotificationName object:nil];
     }
     
     return self;
@@ -81,6 +85,15 @@ NSString * const kBombExplodedNotificationName = @"kBombExplodedNotificationName
     self.texture = [self defaultTexture];
 }
 
+- (void) updatePhysics {
+    if (self.gameScene.world) {
+        self.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:self.physicsSize];
+        self.physicsBody.categoryBitMask = kPhysicsCategory_Bomb;
+        self.physicsBody.collisionBitMask = 0; //kPhysicsCategory_Wall; // is it worth it?
+        self.physicsBody.contactTestBitMask = kPhysicsCategory_Deflagration;
+    }
+}
+
 #pragma mark - Action cache
 
 - (SKAction *) tickingAction {
@@ -96,6 +109,24 @@ NSString * const kBombExplodedNotificationName = @"kBombExplodedNotificationName
         });
     }
     return _tickingAction;
+}
+
+#pragma mark - Collisions handling
+
+- (void) collidedWith:(SKPhysicsBody *)body contact:(SKPhysicsContact *)contact {
+    [super collidedWith:body contact:contact];
+    
+    if (body.categoryBitMask == kPhysicsCategory_Deflagration) {
+        BMDeflagration *deflag = (BMDeflagration *)body.node.parent;
+        
+        if (deflag != self.deflagration) {
+            [self explode];
+        }
+    }
+}
+
+- (void) stoppedCollidingWith:(SKPhysicsBody *)body contact:(SKPhysicsContact *)contact {
+    [super stoppedCollidingWith:body contact:contact];
 }
 
 #pragma mark - Public API

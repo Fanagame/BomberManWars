@@ -12,3 +12,6 @@ static const uint32_t kPhysicsCategory_Bomb         = 0x1 << 2; // 4
 static const uint32_t kPhysicsCategory_Deflagration = 0x1 << 3; // 8
 
 #define SHOW_JOYSTICK
+//#define CHAR_AI_CHOOSE_SPAWN_SEQUENCE
+//#define CHAR_PLACE_BOMB_BEHIND
+#define CHAR_LOCAL_PLAYER_IS_INVINCIBLE

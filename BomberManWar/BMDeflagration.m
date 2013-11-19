@@ -7,6 +7,9 @@
 //
 
 #import "BMDeflagration.h"
+#import "BMConstants.h"
+
+#define PHYSICS_COLLISION_EXPLOSION_SIZE_DOWNSCALING_FACTOR 0.3
 
 @interface BMDeflagration () {
     NSMutableArray *_deflagrationFrames;
@@ -28,9 +31,15 @@
         self.maxSize = maxSize;
         
         [self loadAnimations];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cameraScaleDidUpdate) name:kCameraZoomChangedNotificationName object:nil];
     }
     
     return self;
+}
+
+- (void) dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void) loadAnimations {
@@ -52,10 +61,26 @@
 
 - (SKAction *) deflagrationAction {
     if (!_deflagrationAction) {
-        _deflagrationAction = [SKAction group:@[[SKAction animateWithTextures:_deflagrationFrames timePerFrame:0.1]
-                                                   ]];
+        _deflagrationAction = [SKAction animateWithTextures:_deflagrationFrames timePerFrame:0.1];
     }
     return _deflagrationAction;
+}
+
+- (void) cameraScaleDidUpdate {
+    if (self.scene) {
+        for (SKNode *node in self.deflagrationSprites) {
+            [self updatePhysicsForNode:node];
+        }
+    }
+}
+
+- (void) updatePhysicsForNode:(SKNode *)node {
+    if (node) {
+        node.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:node.physicsSize];
+        node.physicsBody.categoryBitMask = kPhysicsCategory_Deflagration;
+        node.physicsBody.collisionBitMask = 0;
+        node.physicsBody.dynamic = NO;
+    }
 }
 
 #pragma mark - Public API
@@ -68,11 +93,17 @@
     SKTexture *texture = [self defaultTexture];
     CGSize tileSize = texture.size;
     
+    BOOL leftProgressionStopped = NO;
+    BOOL rightProgressionStopped = NO;
+    BOOL upProgressionStopped = NO;
+    BOOL downProgressionStopped = NO;
+    
     // Add the central explosion (bomb location)
     SKSpriteNode *n = [[SKSpriteNode alloc] initWithTexture:texture];
     n.position = CGPointZero;
     [self addChild:n];
     [self.deflagrationSprites addObject:n];
+    [self updatePhysicsForNode:n];
     [n runAction:self.deflagrationAction completion:^{
         if (onComplete) {
             onComplete();
@@ -81,33 +112,73 @@
     
     // Then add all the other explosion sprites
     for (int i = 1; i <= self.maxSize; i++) {
+        CGPoint nextPos = CGPointZero;
+        CGPoint worldPos = CGPointZero;
+        SKPhysicsBody *collisionBody = nil;
+        
         // left
-        n = [n copy];
-        n.position = CGPointMake(- i * (tileSize.width), 0);
-        [self addChild:n];
-        [self.deflagrationSprites addObject:n];
-        [n runAction:self.deflagrationAction];
+        if (!leftProgressionStopped) {
+            nextPos = CGPointMake(- i * (tileSize.width), 0);
+            worldPos = [self.scene convertPoint:nextPos fromNode:self];
+            collisionBody = [self.scene.physicsWorld bodyInRect:CGRectMake(worldPos.x, worldPos.y, tileSize.width * PHYSICS_COLLISION_EXPLOSION_SIZE_DOWNSCALING_FACTOR, tileSize.height * PHYSICS_COLLISION_EXPLOSION_SIZE_DOWNSCALING_FACTOR)];
+            if (!collisionBody || (collisionBody && collisionBody.categoryBitMask != kPhysicsCategory_Wall)) {
+                n = [n copy];
+                n.position = nextPos;
+                [self addChild:n];
+                [self.deflagrationSprites addObject:n];
+                [n runAction:self.deflagrationAction];
+            } else {
+                leftProgressionStopped = YES;
+            }
+        }
         
         // right
-        n = [n copy];
-        n.position = CGPointMake(i * (tileSize.width), 0);
-        [self addChild:n];
-        [self.deflagrationSprites addObject:n];
-        [n runAction:self.deflagrationAction];
+        if (!rightProgressionStopped) {
+            nextPos = CGPointMake(i * (tileSize.width), 0);
+            worldPos = [self.scene convertPoint:nextPos fromNode:self];
+            collisionBody = [self.scene.physicsWorld bodyInRect:CGRectMake(worldPos.x, worldPos.y, tileSize.width * PHYSICS_COLLISION_EXPLOSION_SIZE_DOWNSCALING_FACTOR, tileSize.height * PHYSICS_COLLISION_EXPLOSION_SIZE_DOWNSCALING_FACTOR)];
+            if (!collisionBody || (collisionBody && collisionBody.categoryBitMask != kPhysicsCategory_Wall)) {
+                n = [n copy];
+                n.position = nextPos;
+                [self addChild:n];
+                [self.deflagrationSprites addObject:n];
+                [n runAction:self.deflagrationAction];
+            } else {
+                rightProgressionStopped = YES;
+            }
+        }
         
         // up
-        n = [n copy];
-        n.position = CGPointMake(0, - i * (tileSize.height));
-        [self addChild:n];
-        [self.deflagrationSprites addObject:n];
-        [n runAction:self.deflagrationAction];
+        if (!upProgressionStopped) {
+            nextPos = CGPointMake(0, - i * (tileSize.height));
+            worldPos = [self.scene convertPoint:nextPos fromNode:self];
+            collisionBody = [self.scene.physicsWorld bodyInRect:CGRectMake(worldPos.x, worldPos.y, tileSize.width * PHYSICS_COLLISION_EXPLOSION_SIZE_DOWNSCALING_FACTOR, tileSize.height * PHYSICS_COLLISION_EXPLOSION_SIZE_DOWNSCALING_FACTOR)];
+            if (!collisionBody || (collisionBody && collisionBody.categoryBitMask != kPhysicsCategory_Wall)) {
+                n = [n copy];
+                n.position = nextPos;
+                [self addChild:n];
+                [self.deflagrationSprites addObject:n];
+                [n runAction:self.deflagrationAction];
+            } else {
+                upProgressionStopped = YES;
+            }
+        }
         
         // down
-        n = [n copy];
-        n.position = CGPointMake(0, i * (tileSize.height));
-        [self addChild:n];
-        [self.deflagrationSprites addObject:n];
-        [n runAction:self.deflagrationAction];
+        if (!downProgressionStopped) {
+            nextPos = CGPointMake(0, i * (tileSize.height));
+            worldPos = [self.scene convertPoint:nextPos fromNode:self];
+            collisionBody = [self.scene.physicsWorld bodyInRect:CGRectMake(worldPos.x, worldPos.y, tileSize.width * PHYSICS_COLLISION_EXPLOSION_SIZE_DOWNSCALING_FACTOR, tileSize.height * PHYSICS_COLLISION_EXPLOSION_SIZE_DOWNSCALING_FACTOR)];
+            if (!collisionBody || (collisionBody && collisionBody.categoryBitMask != kPhysicsCategory_Wall)) {
+                n = [n copy];
+                n.position = nextPos;
+                [self addChild:n];
+                [self.deflagrationSprites addObject:n];
+                [n runAction:self.deflagrationAction];
+            } else {
+                downProgressionStopped = YES;
+            }
+        }
     }
 }
 

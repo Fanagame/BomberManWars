@@ -2,6 +2,51 @@
 <map version="1.0" orientation="orthogonal" width="25" height="24" tilewidth="32" tileheight="32">
  <tileset firstgid="1" name="junk" tilewidth="32" tileheight="32" spacing="1" margin="1">
   <image source="tmw_desert_spacing.png" trans="ffffff" width="265" height="199"/>
+  <tile id="0">
+   <properties>
+    <property name="Walkable" value="NO"/>
+   </properties>
+  </tile>
+  <tile id="1">
+   <properties>
+    <property name="Walkable" value="NO"/>
+   </properties>
+  </tile>
+  <tile id="2">
+   <properties>
+    <property name="Walkable" value="NO"/>
+   </properties>
+  </tile>
+  <tile id="8">
+   <properties>
+    <property name="Walkable" value="NO"/>
+   </properties>
+  </tile>
+  <tile id="9">
+   <properties>
+    <property name="Walkable" value="NO"/>
+   </properties>
+  </tile>
+  <tile id="10">
+   <properties>
+    <property name="Walkable" value="NO"/>
+   </properties>
+  </tile>
+  <tile id="16">
+   <properties>
+    <property name="Walkable" value="NO"/>
+   </properties>
+  </tile>
+  <tile id="17">
+   <properties>
+    <property name="Walkable" value="NO"/>
+   </properties>
+  </tile>
+  <tile id="18">
+   <properties>
+    <property name="Walkable" value="NO"/>
+   </properties>
+  </tile>
  </tileset>
  <tileset firstgid="49" name="meta" tilewidth="32" tileheight="32" spacing="1" margin="1">
   <image source="meta_tiles.png" width="67" height="34"/>
@@ -17,22 +62,22 @@
   </data>
  </layer>
  <objectgroup name="MetaObjects" width="25" height="24">
-  <object name="SpawnPoint" x="50" y="53" width="43" height="41">
+  <object name="SpawnPoint" x="182" y="185" width="43" height="41">
    <properties>
     <property name="type" value="SpawnPoint"/>
    </properties>
   </object>
-  <object name="SpawnPoint" x="704" y="57" width="44" height="41">
+  <object name="SpawnPoint" x="570" y="186" width="44" height="41">
    <properties>
     <property name="type" value="SpawnPoint"/>
    </properties>
   </object>
-  <object name="SpawnPoint" x="711" y="690" width="40" height="40">
+  <object name="SpawnPoint" x="573" y="570" width="40" height="40">
    <properties>
     <property name="type" value="SpawnPoint"/>
    </properties>
   </object>
-  <object name="SpawnPoint" x="45" y="686" width="43" height="41">
+  <object name="SpawnPoint" x="183" y="572" width="43" height="41">
    <properties>
     <property name="type" value="SpawnPoint"/>
    </properties>

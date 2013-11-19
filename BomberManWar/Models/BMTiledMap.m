@@ -55,6 +55,7 @@ NSString * const kTiledMapTilePropertyName_Walkable = @"Walkable";
                 for (NSDictionary *object in self.meshGroup.objects) {
                     [self.walls addObject:[[BMWall alloc] initWithDictionary:object]];
                     [self.tiledMap addChild:self.walls.lastObject];
+                    [self.walls.lastObject updatePhysics];
                 }
             }
 

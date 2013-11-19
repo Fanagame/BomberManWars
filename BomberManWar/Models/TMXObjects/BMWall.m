@@ -18,7 +18,7 @@
 
 - (void) updatePhysics {
     if (self.gameScene.world) {
-        self.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:CGSizeMake(self.size.width * self.gameScene.world.xScale, self.size.height * self.gameScene.world.yScale)];
+        self.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:self.physicsSize];
         self.physicsBody.categoryBitMask = kPhysicsCategory_Wall;
         self.physicsBody.collisionBitMask = 0;
         self.physicsBody.dynamic = NO;

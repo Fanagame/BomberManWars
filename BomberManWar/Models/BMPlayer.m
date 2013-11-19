@@ -26,7 +26,6 @@ static BMPlayer *_localPlayer;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-
 #pragma mark - HUD delegate 
 
 - (void) didTapDropBombButton {

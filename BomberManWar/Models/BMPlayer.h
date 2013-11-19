@@ -17,6 +17,8 @@
 @property (nonatomic, strong) NSString *displayName;
 @property (nonatomic, strong) NSString *gameCenterId;
 
+@property (nonatomic, assign) BOOL isAI;
+
 @property (nonatomic, assign) NSInteger remainingLives;
 @property (nonatomic, assign) NSInteger score;
 
