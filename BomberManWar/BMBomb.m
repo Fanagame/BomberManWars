@@ -8,6 +8,8 @@
 
 #import "BMBomb.h"
 #import "BMDeflagration.h"
+#import "BMCharacter.h"
+#import "BMPlayer.h"
 #import "BMConstants.h"
 
 #define TICKING_ANIMATION_SPEED 0.25
@@ -94,7 +96,43 @@ NSString * const kBombExplodedNotificationName = @"kBombExplodedNotificationName
     }
 }
 
+- (NSDictionary *) dictionaryRepresentation {
+    NSMutableDictionary *dic = [[NSMutableDictionary alloc] init];
+    
+    dic[@"bomb_position"] = [NSValue valueWithCGPoint:self.position];
+    dic[@"bomb_owner_id"] = self.owner.player.gameCenterId;
+    if (self.tickingStartDate) {
+        dic[@"bomb_planted_date"] = self.tickingStartDate;
+    }
+    dic[@"bomb_status"] = [NSNumber numberWithInteger:self.state];
+    
+    return dic;
+}
+
+- (void) updateFromDictionary:(NSDictionary *)dictionary {
+    self.state = [dictionary[@"bomb_status"] integerValue];
+    self.tickingStartDate = dictionary[@"bomb_planted_date"];
+    self.position = [dictionary[@"bomb_position"] CGPointValue];
+    
+    // this is kinda dirty
+    [self runAction:[self tickingActionWithCustomStartingDate:self.tickingStartDate]];
+}
+
 #pragma mark - Action cache
+
+- (SKAction *) tickingActionWithCustomStartingDate:(NSDate *)startingDate {
+    SKAction *tickingA = [SKAction repeatActionForever:[SKAction animateWithTextures:_tickingAnimationFrames timePerFrame:TICKING_ANIMATION_SPEED]];
+    
+    // Make it explode in a few seconds
+    __weak BMBomb *weakSelf = self;
+    double delayInSeconds = self.timeBeforeExploding + [startingDate timeIntervalSinceNow];
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        [weakSelf explode];
+    });
+    
+    return tickingA;
+}
 
 - (SKAction *) tickingAction {
     if (!_tickingAction) {
@@ -134,7 +172,7 @@ NSString * const kBombExplodedNotificationName = @"kBombExplodedNotificationName
 - (void) startTicking {
     if (self.state == kBombStateStandby) {
         self.state = kBombStateTicking;
-        
+        self.tickingStartDate = [[NSDate alloc] initWithTimeIntervalSinceNow:0];
         [self runAction:self.tickingAction];
     } else {
         NSLog(@"Can't start ticking. Current state is: %d", self.state);

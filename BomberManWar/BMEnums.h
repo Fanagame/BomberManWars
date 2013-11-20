@@ -38,3 +38,19 @@ typedef enum BMDirection : NSInteger {
 	kDirectionUp = 2,
 	kDirectionRight = 3
 } BMDirection;
+
+typedef enum BMBombState : NSUInteger {
+    kBombStateStandby,
+    kBombStateTicking,
+    kBombStateExploding,
+    kBombStateExploded
+} BMBombState;
+
+typedef enum : uint8_t {
+    kPacketTypeUnknown,
+    kPacketTypeGameReadyAnnouncement,
+    kPacketTypeGameReadyAcknowledgment,
+    kPacketTypeSync,
+    kPacketTypeUpdatePosition,
+    kPacketTypeBombPlanted
+} BMPacketType;

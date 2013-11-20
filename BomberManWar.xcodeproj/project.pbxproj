@@ -14,6 +14,11 @@
 		441E42F91839DE1B0074A93A /* Bombs.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 441E42F71839DE1B0074A93A /* Bombs.atlas */; };
 		441E42FC1839E02F0074A93A /* HeroWalk.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 441E42FB1839E02F0074A93A /* HeroWalk.atlas */; };
 		447BD222183AFC4400FCFD3A /* BMCharacterAI.m in Sources */ = {isa = PBXBuildFile; fileRef = 447BD221183AFC4400FCFD3A /* BMCharacterAI.m */; };
+		44983C2D183C19B2001A355F /* BMGameCenterManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 44983C2C183C19B2001A355F /* BMGameCenterManager.m */; };
+		44983C40183C35C2001A355F /* UIAlertView+showAlert.m in Sources */ = {isa = PBXBuildFile; fileRef = 44983C3F183C35C2001A355F /* UIAlertView+showAlert.m */; };
+		44983C43183C41FE001A355F /* BMOptionsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 44983C42183C41FE001A355F /* BMOptionsViewController.m */; };
+		44983C47183D2D62001A355F /* BMMultiplayerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 44983C46183D2D62001A355F /* BMMultiplayerManager.m */; };
+		44983C49183D2D6E001A355F /* MultipeerConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 44983C48183D2D6E001A355F /* MultipeerConnectivity.framework */; };
 		44ADDD5118369B00005B0971 /* BMSpawnAI.m in Sources */ = {isa = PBXBuildFile; fileRef = 44ADDD5018369B00005B0971 /* BMSpawnAI.m */; };
 		44ADDD5318369E73005B0971 /* bomberman-anim-spritesheet.png in Resources */ = {isa = PBXBuildFile; fileRef = 44ADDD5218369E73005B0971 /* bomberman-anim-spritesheet.png */; };
 		44F9D03B183AA5F000C01D2E /* btn_bomb.png in Resources */ = {isa = PBXBuildFile; fileRef = 44F9D039183AA5F000C01D2E /* btn_bomb.png */; };
@@ -26,8 +31,7 @@
 		72D869521835FCCE00478FE6 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 72D869511835FCCE00478FE6 /* main.m */; };
 		72D869561835FCCE00478FE6 /* BMAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 72D869551835FCCE00478FE6 /* BMAppDelegate.m */; };
 		72D869591835FCCE00478FE6 /* Main_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 72D869571835FCCE00478FE6 /* Main_iPhone.storyboard */; };
-		72D8695C1835FCCE00478FE6 /* Main_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 72D8695A1835FCCE00478FE6 /* Main_iPad.storyboard */; };
-		72D8695F1835FCCE00478FE6 /* BMViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 72D8695E1835FCCE00478FE6 /* BMViewController.m */; };
+		72D8695F1835FCCE00478FE6 /* BMGameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 72D8695E1835FCCE00478FE6 /* BMGameViewController.m */; };
 		72D869621835FCCE00478FE6 /* BMGameScene.m in Sources */ = {isa = PBXBuildFile; fileRef = 72D869611835FCCE00478FE6 /* BMGameScene.m */; };
 		72D869661835FCCE00478FE6 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 72D869651835FCCE00478FE6 /* Images.xcassets */; };
 		72D8696D1835FCCE00478FE6 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72D8696C1835FCCE00478FE6 /* XCTest.framework */; };
@@ -96,6 +100,15 @@
 		441E42FB1839E02F0074A93A /* HeroWalk.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; name = HeroWalk.atlas; path = Resources/HeroWalk.atlas; sourceTree = "<group>"; };
 		447BD220183AFC4400FCFD3A /* BMCharacterAI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BMCharacterAI.h; path = Models/AI/BMCharacterAI.h; sourceTree = "<group>"; };
 		447BD221183AFC4400FCFD3A /* BMCharacterAI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BMCharacterAI.m; path = Models/AI/BMCharacterAI.m; sourceTree = "<group>"; };
+		44983C2B183C19B2001A355F /* BMGameCenterManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMGameCenterManager.h; sourceTree = "<group>"; };
+		44983C2C183C19B2001A355F /* BMGameCenterManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMGameCenterManager.m; sourceTree = "<group>"; };
+		44983C3E183C35C2001A355F /* UIAlertView+showAlert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertView+showAlert.h"; sourceTree = "<group>"; };
+		44983C3F183C35C2001A355F /* UIAlertView+showAlert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIAlertView+showAlert.m"; sourceTree = "<group>"; };
+		44983C41183C41FE001A355F /* BMOptionsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMOptionsViewController.h; sourceTree = "<group>"; };
+		44983C42183C41FE001A355F /* BMOptionsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMOptionsViewController.m; sourceTree = "<group>"; };
+		44983C45183D2D62001A355F /* BMMultiplayerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMMultiplayerManager.h; sourceTree = "<group>"; };
+		44983C46183D2D62001A355F /* BMMultiplayerManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMMultiplayerManager.m; sourceTree = "<group>"; };
+		44983C48183D2D6E001A355F /* MultipeerConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MultipeerConnectivity.framework; path = System/Library/Frameworks/MultipeerConnectivity.framework; sourceTree = SDKROOT; };
 		44ADDD4F18369B00005B0971 /* BMSpawnAI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BMSpawnAI.h; path = Models/AI/BMSpawnAI.h; sourceTree = "<group>"; };
 		44ADDD5018369B00005B0971 /* BMSpawnAI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BMSpawnAI.m; path = Models/AI/BMSpawnAI.m; sourceTree = "<group>"; };
 		44ADDD5218369E73005B0971 /* bomberman-anim-spritesheet.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bomberman-anim-spritesheet.png"; path = "Resources/bomberman-anim-spritesheet.png"; sourceTree = "<group>"; };
@@ -113,9 +126,8 @@
 		72D869541835FCCE00478FE6 /* BMAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BMAppDelegate.h; sourceTree = "<group>"; };
 		72D869551835FCCE00478FE6 /* BMAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BMAppDelegate.m; sourceTree = "<group>"; };
 		72D869581835FCCE00478FE6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main_iPhone.storyboard; sourceTree = "<group>"; };
-		72D8695B1835FCCE00478FE6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main_iPad.storyboard; sourceTree = "<group>"; };
-		72D8695D1835FCCE00478FE6 /* BMViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BMViewController.h; sourceTree = "<group>"; };
-		72D8695E1835FCCE00478FE6 /* BMViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BMViewController.m; sourceTree = "<group>"; };
+		72D8695D1835FCCE00478FE6 /* BMGameViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BMGameViewController.h; sourceTree = "<group>"; };
+		72D8695E1835FCCE00478FE6 /* BMGameViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BMGameViewController.m; sourceTree = "<group>"; };
 		72D869601835FCCE00478FE6 /* BMGameScene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BMGameScene.h; sourceTree = "<group>"; };
 		72D869611835FCCE00478FE6 /* BMGameScene.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BMGameScene.m; sourceTree = "<group>"; };
 		72D869651835FCCE00478FE6 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
@@ -187,6 +199,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				44983C49183D2D6E001A355F /* MultipeerConnectivity.framework in Frameworks */,
 				44071DDC183AF25900B2ABA3 /* GameKit.framework in Frameworks */,
 				72D8699C1836034800478FE6 /* libz.dylib in Frameworks */,
 				72D869461835FCCE00478FE6 /* CoreGraphics.framework in Frameworks */,
@@ -214,8 +227,21 @@
 			children = (
 				44071DD8183ADD3400B2ABA3 /* SKNode+physicsSize.h */,
 				44071DD9183ADD3400B2ABA3 /* SKNode+physicsSize.m */,
+				44983C3E183C35C2001A355F /* UIAlertView+showAlert.h */,
+				44983C3F183C35C2001A355F /* UIAlertView+showAlert.m */,
 			);
 			name = Categories;
+			sourceTree = "<group>";
+		};
+		44983C44183D2D49001A355F /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				44983C2B183C19B2001A355F /* BMGameCenterManager.h */,
+				44983C2C183C19B2001A355F /* BMGameCenterManager.m */,
+				44983C45183D2D62001A355F /* BMMultiplayerManager.h */,
+				44983C46183D2D62001A355F /* BMMultiplayerManager.m */,
+			);
+			name = Managers;
 			sourceTree = "<group>";
 		};
 		44ADDD4E18369AEA005B0971 /* AI */ = {
@@ -260,6 +286,7 @@
 		72D869421835FCCE00478FE6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				44983C48183D2D6E001A355F /* MultipeerConnectivity.framework */,
 				44071DDB183AF25900B2ABA3 /* GameKit.framework */,
 				72D8699B1836034800478FE6 /* libz.dylib */,
 				72D869431835FCCE00478FE6 /* Foundation.framework */,
@@ -274,6 +301,7 @@
 		72D8694B1835FCCE00478FE6 /* BomberManWar */ = {
 			isa = PBXGroup;
 			children = (
+				44983C44183D2D49001A355F /* Managers */,
 				72D86990183600FA00478FE6 /* BMConstants.h */,
 				72D8698F183600BA00478FE6 /* BMEnums.h */,
 				72D869AB1836088D00478FE6 /* Caches */,
@@ -324,9 +352,10 @@
 			isa = PBXGroup;
 			children = (
 				72D869571835FCCE00478FE6 /* Main_iPhone.storyboard */,
-				72D8695A1835FCCE00478FE6 /* Main_iPad.storyboard */,
-				72D8695D1835FCCE00478FE6 /* BMViewController.h */,
-				72D8695E1835FCCE00478FE6 /* BMViewController.m */,
+				72D8695D1835FCCE00478FE6 /* BMGameViewController.h */,
+				72D8695E1835FCCE00478FE6 /* BMGameViewController.m */,
+				44983C41183C41FE001A355F /* BMOptionsViewController.h */,
+				44983C42183C41FE001A355F /* BMOptionsViewController.m */,
 			);
 			name = Root;
 			sourceTree = "<group>";
@@ -613,7 +642,6 @@
 				72D869C31836100300478FE6 /* bomberman-test.png in Resources */,
 				72D869D91836107200478FE6 /* btn_circle_green@2x.png in Resources */,
 				72D869DC1836107200478FE6 /* btn_circle_red.png in Resources */,
-				72D8695C1835FCCE00478FE6 /* Main_iPad.storyboard in Resources */,
 				72D869D81836107200478FE6 /* btn_circle_green.png in Resources */,
 				72D869BE18360FF900478FE6 /* bomberman-demo.tmx in Resources */,
 				72D869DF1836107200478FE6 /* btn_rect_green@2x.png in Resources */,
@@ -657,12 +685,13 @@
 				72D869AE1836089A00478FE6 /* BMMapCache.m in Sources */,
 				72D869AA1836078D00478FE6 /* BMSpawn.m in Sources */,
 				72D869F018368B2300478FE6 /* BMJoystick.m in Sources */,
-				72D8695F1835FCCE00478FE6 /* BMViewController.m in Sources */,
+				72D8695F1835FCCE00478FE6 /* BMGameViewController.m in Sources */,
 				72D869A6183606C600478FE6 /* BMTMXObject.m in Sources */,
 				72D869B918360D1500478FE6 /* BMHudNode.m in Sources */,
 				72D869621835FCCE00478FE6 /* BMGameScene.m in Sources */,
 				72D8698B1835FE7900478FE6 /* BMCamera.m in Sources */,
 				44071DD6183AC02A00B2ABA3 /* BMDeflagration.m in Sources */,
+				44983C40183C35C2001A355F /* UIAlertView+showAlert.m in Sources */,
 				72D869BC18360DB500478FE6 /* BMHudButton.m in Sources */,
 				72D869521835FCCE00478FE6 /* main.m in Sources */,
 				72D869A5183606C600478FE6 /* BMMapObject.m in Sources */,
@@ -672,11 +701,14 @@
 				441E42F61839B9AD0074A93A /* BMWall.m in Sources */,
 				44071DDA183ADD3400B2ABA3 /* SKNode+physicsSize.m in Sources */,
 				72D869B31836090400478FE6 /* BMPathFinder.m in Sources */,
+				44983C2D183C19B2001A355F /* BMGameCenterManager.m in Sources */,
 				72D869931836017A00478FE6 /* PathFinder.m in Sources */,
+				44983C47183D2D62001A355F /* BMMultiplayerManager.m in Sources */,
 				72D869E6183686B900478FE6 /* BMCharacter.m in Sources */,
 				72D869561835FCCE00478FE6 /* BMAppDelegate.m in Sources */,
 				72D8699A183601C300478FE6 /* JSTileMap.m in Sources */,
 				72D869EA183686E200478FE6 /* BMBomb.m in Sources */,
+				44983C43183C41FE001A355F /* BMOptionsViewController.m in Sources */,
 				72D869B41836090400478FE6 /* BMTiledMap.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -714,14 +746,6 @@
 				72D869581835FCCE00478FE6 /* Base */,
 			);
 			name = Main_iPhone.storyboard;
-			sourceTree = "<group>";
-		};
-		72D8695A1835FCCE00478FE6 /* Main_iPad.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				72D8695B1835FCCE00478FE6 /* Base */,
-			);
-			name = Main_iPad.storyboard;
 			sourceTree = "<group>";
 		};
 		72D869751835FCCE00478FE6 /* InfoPlist.strings */ = {
@@ -812,6 +836,7 @@
 		72D8697D1835FCCE00478FE6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -827,6 +852,7 @@
 		72D8697E1835FCCE00478FE6 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";

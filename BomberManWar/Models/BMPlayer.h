@@ -21,9 +21,12 @@
 
 @property (nonatomic, assign) NSInteger remainingLives;
 @property (nonatomic, assign) NSInteger score;
+@property (nonatomic, readonly) BOOL hasPendingUpdates;
 
 @property (nonatomic, strong) BMCharacter *character;
 
 + (instancetype) localPlayer;
+- (NSDictionary *) dictionaryRepresentation;
+- (void) updateWithBlob:(NSDictionary *)blob;
 
 @end

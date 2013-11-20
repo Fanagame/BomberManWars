@@ -22,6 +22,8 @@ extern NSString * const kHUDDropBombButtonPressedNotificationName;
 
 @property (nonatomic, readonly) CGFloat topOverlayHeight;
 
+@property (nonatomic, strong) NSArray *players;
+
 - (void) didMoveToScene;
 
 @end

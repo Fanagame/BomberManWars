@@ -18,6 +18,8 @@
 #import "BMConstants.h"
 #import "BMWall.h"
 #import "BMConstants.h"
+#import "BMMultiplayerManager.h"
+#import "BMBomb.h"
 
 @interface BMGameScene () {
     CGSize _cachedMapSizeForCamera;
@@ -35,56 +37,19 @@
         self.anchorPoint = CGPointMake(0.5, 0.5);
         self.mapName = mapName;
 		
-        // initialize the main layers
-        _world = [[SKNode alloc] init];
-        _world.name = @"world";
-        _layers = [NSMutableArray arrayWithCapacity:kWorldLayerCount];
-        for (int i = 0; i < kWorldLayerCount; i++) {
-			SKNode *layer = [[SKNode alloc] init];
-            layer.zPosition = i - kWorldLayerCount;
-            [_world addChild:layer];
-            [(NSMutableArray *)_layers addObject:layer];
-        }
-        
-        [self addChild:_world];
-        
-        // Initialize player
-        self.players = [[NSMutableArray alloc] init];
-        BMPlayer *p = [BMPlayer localPlayer];
-        [[BMJoystick localPlayerJoystick] setDelegate:p];
-        p.displayName = @"Remy";
-        [self.players addObject:p];
-        
-        /*
-         * FAKE OTHER PLAYERS
-         */
-        BMPlayer *p2 = [[BMPlayer alloc] init];
-        p2.displayName = @"Player2";
-        p2.isAI = YES;
-        [self.players addObject:p2];
-        
-        /*
-         * END FAKE OTHER PLAYERS
-         */
-        
-        // Initialize the world + hud
-		[self buildWorld];
-        
-        // Initialize the camera
-        [[BMCamera sharedCamera] setWorld:_world];
-        [[BMCamera sharedCamera] setDelegate:self];
-        
-        // Center the camera on the hero spawn point.
-        [[BMCamera sharedCamera] setCameraToDefaultZoomLevel];
-        
         // Register to important notifications
 //        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playerLivesReachedZero:) name:kLocalPlayerLivesReachedZeroNotificationName object:nil];
+        
+        // Setup the network data manager and start sending packets
+        [self startupNetwork];
     }
     
     return self;
 }
 
 - (void) dealloc {
+    [BMPlayer localPlayer].character = nil;
+    
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -94,8 +59,253 @@
 }
 
 - (void)didMoveToView:(SKView *)view {
+    [self setupWorldLayers];
+    [self setupPlayers];
+    
+    // Initialize the world + hud
+    [self buildWorld];
     [self buildHUD];
     
+    // Initialize the camera
+    [[BMCamera sharedCamera] setWorld:_world];
+    [[BMCamera sharedCamera] setDelegate:self];
+    
+    // Center the camera on the hero spawn point.
+    [[BMCamera sharedCamera] setCameraToDefaultZoomLevel];
+    
+    [self setupGestureRecognizers];
+}
+
+#pragma mark - Network stuff
+
+- (void) startupNetwork {
+    self.retryTimeInterval = 1;
+    self.timeIntervalPositionUpdate = 0.10;
+    self.opponentIsReady = NO;
+    [[BMGameCenterManager currentSession] setDataDelegate:self];
+}
+
+- (void) sendGameIsReady {
+    // The game won't start until we have received a 'game is ready' from everyone
+    
+    // Do not send the game is ready packet once
+    if (!self.opponentKnowsWereReady) {
+        if (!self.lastTryDate || (self.lastTryDate && -[self.lastTryDate timeIntervalSinceNow] >= self.retryTimeInterval)) {
+            self.lastTryDate = [[NSDate alloc] initWithTimeIntervalSinceNow:0];
+            [self sendPacket:kPacketTypeGameReadyAnnouncement withBlob:nil];
+        }
+    }
+}
+
+- (void) updatePlayersPosition {
+    // when was the last update?
+    if (-[self.lastTryDate timeIntervalSinceNow] > self.timeIntervalPositionUpdate && [[BMPlayer localPlayer] hasPendingUpdates]) {
+       
+        // Now send the packet
+        [self sendPacket:kPacketTypeUpdatePosition withBlob:[[BMPlayer localPlayer] dictionaryRepresentation] fastMode:YES];
+        
+        self.lastTryDate = [[NSDate alloc] initWithTimeIntervalSinceNow:0];
+    }
+}
+
+- (void) sendPlantedBomb:(BMBomb *)bomb {
+    // build a blob
+    NSDictionary *blob = [bomb dictionaryRepresentation];
+    
+    // now send the packet
+    [self sendPacket:kPacketTypeBombPlanted withBlob:blob fastMode:NO];
+}
+
+- (void) sendPacket:(BMPacketType)packetType withBlob:(NSDictionary *)blob {
+    [self sendPacket:packetType withBlob:blob fastMode:NO];
+}
+
+- (void) sendPacket:(BMPacketType)packetType withBlob:(NSDictionary *)blob fastMode:(BOOL)fastMode {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        BMGameCenterManager *gc = [BMGameCenterManager currentSession];
+        
+        NSData *hello = [[BMMultiplayerPacket packetWithType:packetType andBlob:blob] dataRepresentation];
+        NSError *error = nil;
+        if (![gc.match sendDataToAllPlayers:hello withDataMode:(fastMode ? GKMatchSendDataUnreliable : GKMatchSendDataReliable) error:&error]) {
+            if (error) {
+                NSLog(@"ERROR: %@", error);
+            }
+        }
+    });
+}
+
+- (void) sync {
+    // Let's send the hero list and their position
+    NSMutableDictionary *blob = [[NSMutableDictionary alloc] init];
+    NSMutableArray *playersBlob = [[NSMutableArray alloc] init];
+    
+    for (BMPlayer *p in self.players) {
+        NSDictionary *hostPlayerInfo = [p dictionaryRepresentation];
+        [playersBlob addObject:hostPlayerInfo];
+    }
+    blob[@"players"] = playersBlob;
+    
+    
+    // Now send the packet
+    [self sendPacket:kPacketTypeSync withBlob:blob];
+}
+
+- (void) match:(GKMatch *)match didReceiveData:(NSData *)data fromPlayer:(NSString *)playerID {
+    
+    // handle game updates
+    
+    BMMultiplayerPacket *packet = [BMMultiplayerPacket packetWithData:data];
+    NSString *deviceName = [UIDevice currentDevice].name;
+    
+    if (packet.packetType == kPacketTypeGameReadyAnnouncement) {
+        if (!self.opponentIsReady) {
+            NSLog(@"Received kPacketTypeGameReadyAnnouncement on %@", deviceName);
+            self.opponentIsReady = YES;
+            [self sendPacket:kPacketTypeGameReadyAcknowledgment withBlob:nil];
+        } else {
+            NSLog(@"Ignoring kPacketTypeGameReadyAnnouncement replay on %@", deviceName);
+        }
+    } else if (packet.packetType == kPacketTypeGameReadyAcknowledgment) {
+        if (!self.opponentKnowsWereReady) {
+            NSLog(@"Received kPacketTypeGameReadyAcknowledgment on %@", deviceName);
+            self.opponentKnowsWereReady = YES;
+            
+            // The server syncs to the send client the initial data
+            if (!self.isClient)
+                [self sync];
+        } else {
+            NSLog(@"Ignoring kPacketTypeGameReadyAcknowledgment replay on %@", deviceName);
+        }
+    } else if (packet.packetType == kPacketTypeSync) {
+        NSLog(@"Received kPacketTypeSync on %@", deviceName);
+        [self handlePacketBlob:packet.blob];
+        self.firstSyncIsDone = YES;
+    } else if (packet.packetType == kPacketTypeUpdatePosition) {
+        [self handleUpdatePosition:packet.blob];
+    } else if (packet.packetType == kPacketTypeBombPlanted) {
+        NSLog(@"Received kPacketTypeBombPlanted on %@", deviceName);
+        [self handleBombPlanted:packet.blob];
+    }
+    else {
+        NSLog(@"Unknown packet received on %@: %d", deviceName, packet.packetType);
+    }
+}
+
+- (void) handleBombPlanted:(NSDictionary *)blob {
+    BMBomb *b = [[BMBomb alloc] init];
+    [b updateFromDictionary:blob];
+    
+    // Now we need to attach it to the right player AND add the node to the world
+    BMPlayer *owner = [self playerForGameCenterId:blob[@"bomb_owner_id"]];
+    [self addNode:b atWorldLayer:BMWorldLayerBelowCharacter];
+    [b updatePhysics];
+    b.owner = owner.character;
+    [b.owner.currentBombs addObject:b];
+    
+}
+
+- (void) handleUpdatePosition:(NSDictionary *)playerBlob {
+    if ([playerBlob isKindOfClass:[NSDictionary class]]) {
+        BMPlayer *player = [self playerForGameCenterId:playerBlob[@"gameCenterId"]];
+        
+        if (!player) {
+            NSLog(@"Not player found locally for game center id: %@", playerBlob[@"gameCenterId"]);
+        }
+        [player updateWithBlob:playerBlob];
+    }
+}
+
+- (void) handlePacketBlob:(NSDictionary *)blob {
+    if (blob) {
+        if ([blob[@"players"] isKindOfClass:[NSArray class]]) {
+            for (NSDictionary *playerBlob in blob[@"players"]) {
+                BMPlayer *player = [self playerForGameCenterId:playerBlob[@"gameCenterId"]];
+                
+                if (!player) {
+                    NSLog(@"Not player found locally for game center id: %@", playerBlob[@"gameCenterId"]);
+                }
+                [player updateWithBlob:playerBlob];
+            }
+        } else {
+            NSLog(@"players key is not an array");
+        }
+    } else {
+        NSLog(@"Can't handle empty blob");
+    }
+}
+
+- (BMPlayer *) playerForGameCenterId:(NSString *)gameCenterId {
+    NSPredicate *filter = [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
+        if ([evaluatedObject isKindOfClass:[BMPlayer class]]) {
+            BMPlayer *p = (BMPlayer *)evaluatedObject;
+            
+            if ([p.gameCenterId isEqualToString:gameCenterId]) {
+                return YES;
+            }
+        }
+        return NO;
+    }];
+    
+    NSArray *res = [self.players filteredArrayUsingPredicate:filter];
+    
+    if (res.count > 0) {
+        return res[0];
+    }
+    return nil;
+}
+
+#pragma mark - Setup
+
+- (void) setupWorldLayers {
+    // initialize the main layers
+    _world = [[SKNode alloc] init];
+    _world.name = @"world";
+    _layers = [NSMutableArray arrayWithCapacity:kWorldLayerCount];
+    for (int i = 0; i < kWorldLayerCount; i++) {
+        SKNode *layer = [[SKNode alloc] init];
+        layer.zPosition = i - kWorldLayerCount;
+        [_world addChild:layer];
+        [(NSMutableArray *)_layers addObject:layer];
+    }
+    
+    [self addChild:_world];
+}
+
+- (void) setupPlayers {
+    // Initialize player
+    self.players = [[NSMutableArray alloc] init];
+    BMPlayer *p = [BMPlayer localPlayer];
+    [[BMJoystick localPlayerJoystick] setDelegate:p];
+    
+    if (self.multiplayerEnabled && self.localGameCenterPlayer) {
+        p.displayName = self.localGameCenterPlayer.alias;
+        p.gameCenterId = self.localGameCenterPlayer.playerID;
+        [self.players addObject:p];
+        
+        for (GKPlayer *gkPlayer in self.gameCenterPlayers) {
+            BMPlayer *pl = [[BMPlayer alloc] init];
+            pl.displayName = gkPlayer.alias;
+            pl.gameCenterId = gkPlayer.playerID;
+            [self.players addObject:pl];
+        }
+    } else {
+        p.displayName = @"Remy (SOLO GAME)";
+        [self.players addObject:p];
+        
+        /*
+         * FAKE OTHER PLAYERS
+         */
+        BMPlayer *p2 = [[BMPlayer alloc] init];
+        p2.displayName = @"Player2 (AI)";
+        p2.isAI = YES;
+        [self.players addObject:p2];
+        /*
+         * END FAKE OTHER PLAYERS
+         */
+    }
+}
+
+- (void) setupGestureRecognizers {
     UIPanGestureRecognizer *panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePan:)];
     panRecognizer.minimumNumberOfTouches = 1;
     panRecognizer.maximumNumberOfTouches = 1;
@@ -145,6 +355,7 @@
 
 - (void) buildHUD {
     _hud = [[BMHudNode alloc] init];
+    _hud.players = self.players;
     [self addChild:_hud];
     [_hud didMoveToScene];
     
@@ -266,38 +477,54 @@
 
 - (void)updateWithTimeSinceLastUpdate:(NSTimeInterval)timeSinceLast {
     // Game logic
-    for (BMSpawn *spawnPoint in self.spawnPoints) {
-        [spawnPoint updateWithTimeSinceLastUpdate:timeSinceLast];
-    }
     
-    for (BMPlayer *player in self.players) {
-        [player.character updateWithTimeSinceLastUpdate:timeSinceLast];
-    }
+    // The server doesn't actually start the game until we know that the opponent is ready
+//    if (!self.isClient /* && self.opponentIsReady*/) {
+        for (BMSpawn *spawnPoint in self.spawnPoints) {
+            [spawnPoint updateWithTimeSinceLastUpdate:timeSinceLast];
+        }
+        
+        for (BMPlayer *player in self.players) {
+            [player.character updateWithTimeSinceLastUpdate:timeSinceLast];
+        }
+//    }
 }
 - (void)didSimulatePhysics {
 	[super didSimulatePhysics];
 	
     [[BMCamera sharedCamera] updateCameraTracking];
+    
+    if (self.multiplayerEnabled) {
+        [self sendGameIsReady];
+        [self updatePlayersPosition];
+    }
 }
 
 #pragma mark - Event Handling - iOS
 
 - (void) handlePan:(UIPanGestureRecognizer *)pan {
-    if (pan.state == UIGestureRecognizerStateEnded || pan.state == UIGestureRecognizerStateFailed || pan.state == UIGestureRecognizerStateCancelled) {
-        [BMJoystick localPlayerJoystick].hidden = YES;
+    
+    // Controls are ignored until the other player isn't ready
+    if (!self.multiplayerEnabled || (self.opponentIsReady && self.opponentKnowsWereReady && ((self.isClient && self.firstSyncIsDone) || !self.isClient))) {
+        if (pan.state == UIGestureRecognizerStateEnded || pan.state == UIGestureRecognizerStateFailed || pan.state == UIGestureRecognizerStateCancelled) {
+            [BMJoystick localPlayerJoystick].hidden = YES;
+        } else {
+            // get the translation info
+            CGPoint trans = [pan translationInView:pan.view];
+            
+            // Update the joystick
+            [BMJoystick localPlayerJoystick].hidden = NO;
+            [[BMJoystick localPlayerJoystick] updateDirectionWithTranslation:trans];
+        }
     } else {
         // get the translation info
         CGPoint trans = [pan translationInView:pan.view];
         
-        // Update the joystick
-        [BMJoystick localPlayerJoystick].hidden = NO;
-        [[BMJoystick localPlayerJoystick] updateDirectionWithTranslation:trans];
-        
         // move the camera
-        //	[[BMCamera sharedCamera] moveCameraBy:trans];
+        [[BMCamera sharedCamera] moveCameraBy:trans];
         
         // "reset" the translation
-        //    [pan setTranslation:CGPointZero inView:pan.view];
+        [pan setTranslation:CGPointZero inView:pan.view];
     }
 }
 

@@ -7,8 +7,7 @@
 //
 
 #import "BMMapObject.h"
-
-typedef enum BMBombState : NSUInteger { kBombStateStandby, kBombStateTicking, kBombStateExploding, kBombStateExploded } BMBombState;
+#import "BMEnums.h"
 
 @class BMCharacter, BMDeflagration;
 
@@ -19,11 +18,15 @@ extern NSString * const kBombExplodedNotificationName;
 @property (nonatomic, assign) BMBombState	state;
 @property (nonatomic, assign) NSUInteger	deflagrationRange;
 @property (nonatomic, assign) CFTimeInterval timeBeforeExploding;
+@property (nonatomic, strong) NSDate *tickingStartDate;
 @property (nonatomic, weak) BMCharacter		*owner;
 @property (nonatomic, strong) BMDeflagration *deflagration;
 
 - (void) startTicking;
 - (void) cancelTicking;
 - (void) explode;
+
+- (NSDictionary *) dictionaryRepresentation;
+- (void) updateFromDictionary:(NSDictionary *)dictionary;
 
 @end

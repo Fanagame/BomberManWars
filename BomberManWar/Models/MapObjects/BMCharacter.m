@@ -79,6 +79,20 @@ CFTimeInterval const kCharacterMovingDuration = 0.5;
     }
 }
 
+- (void) setIsColorized:(BOOL)isColorized {
+    if (_isColorized != isColorized) {
+        _isColorized = isColorized;
+        
+        if (_isColorized) {
+            self.color = [UIColor purpleColor];
+            self.colorBlendFactor = 0.55;
+        } else {
+            self.color = [UIColor clearColor];
+            self.colorBlendFactor = 0.0;
+        }
+    }
+}
+
 - (void) loadAnimations {
     _walkingDownFrames = [[NSMutableArray alloc] init];
     _walkingLeftFrames = [[NSMutableArray alloc] init];
@@ -129,7 +143,9 @@ CFTimeInterval const kCharacterMovingDuration = 0.5;
         hitBoxNode.physicsBody.collisionBitMask = kPhysicsCategory_Wall;
 #ifdef CHAR_LOCAL_PLAYER_IS_INVINCIBLE
         if (self.player != [BMPlayer localPlayer]) {
+#endif
             hitBoxNode.physicsBody.contactTestBitMask = kPhysicsCategory_Deflagration;
+#ifdef CHAR_LOCAL_PLAYER_IS_INVINCIBLE
         }
 #endif
         hitBoxNode.physicsBody.allowsRotation = NO;
@@ -137,6 +153,12 @@ CFTimeInterval const kCharacterMovingDuration = 0.5;
 }
 
 #pragma mark - Collisions handling
+
+- (void) updateWithTimeSinceLastUpdate:(CFTimeInterval)interval {
+    if (!self.gameScene.isClient) {
+        [super updateWithTimeSinceLastUpdate:interval];
+    }
+}
 
 - (void) collidedWith:(SKPhysicsBody *)body contact:(SKPhysicsContact *)contact {
     [super collidedWith:body contact:contact];
@@ -247,6 +269,11 @@ CFTimeInterval const kCharacterMovingDuration = 0.5;
     }
 }
 
+- (void) moveToPosition:(CGPoint)newPosition {
+    [self removeAllActions];
+    [self runAction:[SKAction moveTo:newPosition duration:0.10]];
+}
+
 - (void) move:(BMDirection)direction {
     SKAction *moveAction = nil;
     
@@ -292,6 +319,9 @@ CFTimeInterval const kCharacterMovingDuration = 0.5;
         [b updatePhysics];
         [b startTicking];
         [self.currentBombs addObject:b];
+        
+        if (self.gameScene.multiplayerEnabled)
+            [self.gameScene sendPlantedBomb:b];
     }
 }
 

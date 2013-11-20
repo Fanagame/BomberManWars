@@ -9,6 +9,13 @@
 #import "BMHudNode.h"
 #import "BMHudButton.h"
 #import "BMGameScene.h"
+#import "BMPlayer.h"
+#import "BMConstants.h"
+#import "BMGameCenterManager.h"
+
+#define PADDING 20
+#define OVERLAY_WIDTH 200
+#define OVERLAY_HEIGHT 300
 
 NSString * const kHUDDropBombButtonPressedNotificationName = @"kHUDDropBombButtonPressedNotificationName";
 
@@ -23,6 +30,7 @@ NSString * const kHUDDropBombButtonPressedNotificationName = @"kHUDDropBombButto
 
 @property (nonatomic, readonly) BMGameScene *gameScene;
 @property (nonatomic, strong) SKShapeNode *topOverlayNode;
+@property (nonatomic, strong) SKShapeNode *playersOverlayNode;
 
 @end
 
@@ -45,7 +53,6 @@ NSString * const kHUDDropBombButtonPressedNotificationName = @"kHUDDropBombButto
     
     if (self) {
         self.name = @"hud";
-        
 //        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateSoftCurrency) name:kLocalPlayerCurrencyUpdatedNotificationName object:nil];
 //        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateLives) name:kLocalPlayerLivesUpdatedNotificationName object:nil];
     }
@@ -73,10 +80,10 @@ NSString * const kHUDDropBombButtonPressedNotificationName = @"kHUDDropBombButto
     
     // local player name in top left
     self.playerNameLabel = [[SKLabelNode alloc] initWithFontNamed:@"Helvetica Neue Ultralight"];
-    self.playerNameLabel.text = @"PlayerName";
+    self.playerNameLabel.text = [NSString stringWithFormat:@"%@ (%@)", [BMPlayer localPlayer].displayName, [BMPlayer localPlayer].gameCenterId];
     self.playerNameLabel.color = [UIColor whiteColor];
-    self.playerNameLabel.fontSize = 16.0 / [UIScreen mainScreen].scale;
-    self.playerNameLabel.position = CGPointMake(origin.x + 60, -origin.y - self.topOverlayHeight + 5 / [UIScreen mainScreen].scale);
+    self.playerNameLabel.fontSize = 20.0 / [UIScreen mainScreen].scale;
+    self.playerNameLabel.position = CGPointMake(origin.x + self.playerNameLabel.calculateAccumulatedFrame.size.width * 0.5, -origin.y - self.topOverlayHeight + 5 / [UIScreen mainScreen].scale);
     [self.topOverlayNode addChild:self.playerNameLabel];
     
     // Total lives on top
@@ -97,6 +104,48 @@ NSString * const kHUDDropBombButtonPressedNotificationName = @"kHUDDropBombButto
     self.dropBombButton.frame = CGRectMake(self.gameScene.size.width - 64 - 20, self.gameScene.size.height - 64 - 20, 64, 64);
     [self.dropBombButton addTarget:self action:@selector(didTapDropBomb) forControlEvents:UIControlEventTouchUpInside];
     [self.gameScene.view addSubview:self.dropBombButton];
+    
+#ifndef HUD_ALWAYS_SHOW_PLAYERS_OVERLAY
+    if (self.gameScene.multiplayerEnabled) {
+#endif
+        // add top overlay for scores
+        self.playersOverlayNode = [[SKShapeNode alloc] init];
+        self.playersOverlayNode.fillColor = [UIColor blackColor];
+        self.playersOverlayNode.strokeColor = [UIColor clearColor];
+        self.playersOverlayNode.alpha = 0.7;
+        self.playersOverlayNode.position = CGPointMake((scene.size.width * 0.5) - OVERLAY_WIDTH/ [UIScreen mainScreen].scale - PADDING, 0);
+        path = CGPathCreateWithRect(CGRectMake(0, 0, OVERLAY_WIDTH/ [UIScreen mainScreen].scale, OVERLAY_HEIGHT/ [UIScreen mainScreen].scale), NULL);
+        self.playersOverlayNode.path = path;
+        CGPathRelease(path);
+        [self addChild:self.playersOverlayNode];
+        
+        CGFloat currentY = 0;
+        for (BMPlayer *p in self.players) {
+            // Add a line
+            SKLabelNode *label = [[SKLabelNode alloc] initWithFontNamed:self.playerNameLabel.fontName];
+            label.color = self.playerNameLabel.color;
+            label.fontSize = 18.0 / [UIScreen mainScreen].scale;
+            label.horizontalAlignmentMode = SKLabelHorizontalAlignmentModeLeft;
+            label.verticalAlignmentMode = SKLabelVerticalAlignmentModeTop;
+            label.text = [NSString stringWithFormat:@"%@: 0 pts", p.displayName];
+            label.position = CGPointMake(0, currentY + self.playersOverlayNode.frame.size.height);
+            [self.playersOverlayNode addChild:label];
+            
+            currentY -= 30;
+        }
+        
+        // Add a line
+        SKLabelNode *label = [[SKLabelNode alloc] initWithFontNamed:self.playerNameLabel.fontName];
+        label.color = self.playerNameLabel.color;
+        label.fontSize = 18.0 / [UIScreen mainScreen].scale;
+        label.horizontalAlignmentMode = SKLabelHorizontalAlignmentModeLeft;
+        label.verticalAlignmentMode = SKLabelVerticalAlignmentModeTop;
+        label.text = (self.gameScene.isClient ? @"CLIENT" : @"HOST");
+        label.position = CGPointMake(0, currentY + self.playersOverlayNode.frame.size.height);
+        [self.playersOverlayNode addChild:label];
+#ifndef HUD_ALWAYS_SHOW_PLAYERS_OVERLAY
+    }
+#endif
 }
 
 - (void) updateLives {
@@ -106,6 +155,7 @@ NSString * const kHUDDropBombButtonPressedNotificationName = @"kHUDDropBombButto
 #pragma mark - Buttons actions
 
 - (void) didTapExit {
+    [[BMGameCenterManager currentSession] endGame];
 	[self.gameScene.parentViewController.navigationController popViewControllerAnimated:YES];
 }
 

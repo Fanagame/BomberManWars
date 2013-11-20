@@ -10,17 +10,32 @@
 #import "BMEnums.h"
 #import "PathFinder.h"
 #import "BMCamera.h"
+#import <GameKit/GameKit.h>
+#import "BMGameCenterManager.h"
 
 #define kMinTimeInterval (1 / 60)
 
 /* Completion handler for callback after loading assets asynchronously. */
 typedef void (^BMAssetLoadCompletionHandler)(void);
 
-@class BMTiledMap, BMHudNode, BMSpawn;
+@class BMTiledMap, BMHudNode, BMSpawn, BMBomb;
 
-@interface BMGameScene : SKScene<SKPhysicsContactDelegate, ExplorableWorldDelegate, BMCameraDelegate>
+@interface BMGameScene : SKScene<SKPhysicsContactDelegate, ExplorableWorldDelegate, BMCameraDelegate, BMGameCenterMatchDataDelegate>
 
 @property (nonatomic, weak)   UIViewController *parentViewController;
+@property (nonatomic, assign) BOOL multiplayerEnabled;
+@property (nonatomic, assign) BOOL isClient;
+@property (nonatomic, strong) NSArray *gameCenterPlayers;
+@property (nonatomic, strong) GKPlayer *localGameCenterPlayer;
+
+/* Network Stuff */
+@property (nonatomic, assign) BOOL opponentIsReady;
+@property (nonatomic, assign) BOOL opponentKnowsWereReady;
+@property (nonatomic, assign) BOOL firstSyncIsDone;
+@property (nonatomic, assign) CFTimeInterval retryTimeInterval;
+@property (nonatomic, assign) CFTimeInterval timeIntervalPositionUpdate;
+@property (nonatomic, strong) NSDate *lastTryDate;
+
 @property (nonatomic, strong) NSString *mapName;
 @property (nonatomic, strong) SKNode *world;
 @property (nonatomic, strong) NSMutableArray *layers;
@@ -38,7 +53,7 @@ typedef void (^BMAssetLoadCompletionHandler)(void);
 + (void)loadSceneAssetsForMapName:(NSString *)mapName;
 + (void)releaseSceneAssetsForMapName:(NSString *)mapName;
 
-- (id) initWithSize:(CGSize)size andMapName:(NSString *)mapName;
+- (id)initWithSize:(CGSize)size andMapName:(NSString *)mapName;
 - (void)updateWithTimeSinceLastUpdate:(NSTimeInterval)timeSinceLast;
 
 /* All sprites in the scene should be added through this method to ensure they are placed in the correct world layer. */
@@ -55,5 +70,6 @@ typedef void (^BMAssetLoadCompletionHandler)(void);
 //
 - (NSUInteger) playersWithCharacterOnMapCount;
 - (NSArray *) playersWithoutCharactersOnMap;
+- (void) sendPlantedBomb:(BMBomb *)bomb;
 
 @end

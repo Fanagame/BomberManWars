@@ -27,8 +27,15 @@
     c.position = self.position;
     [self.gameScene addNode:c atWorldLayer:BMWorldLayerCharacter];
     
+    c.isColorized = (player != [BMPlayer localPlayer]);
+    
     if (![[BMCamera sharedCamera] trackingEnabled] && player == [BMPlayer localPlayer]) {
         [[BMCamera sharedCamera] pointCameraToCharacter:c trackingEnabled:YES];
+    }
+    
+    if (!self.gameScene.isClient) {
+        // let's hide the sprite until it's validated by the server
+        self.hidden = YES;
     }
 }
 

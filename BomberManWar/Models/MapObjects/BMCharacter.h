@@ -16,6 +16,7 @@ typedef enum BMPlayerState : NSUInteger { kPlayerStateStandby, kPlayerStateDying
 
 @property (nonatomic, assign) BMPlayerState		state;
 @property (nonatomic, assign) BMDirection       currentDirection;
+@property (nonatomic, assign) BOOL              isColorized;
 
 @property (nonatomic, strong) SKSpriteNode      *hitBoxNode;
 @property (nonatomic, readonly) SKAction        *leftMoveAction;
@@ -35,6 +36,7 @@ typedef enum BMPlayerState : NSUInteger { kPlayerStateStandby, kPlayerStateDying
 - (void) dropBomb;
 //- (void) shootBomb;
 //- (void) grabBonus;
+- (void) moveToPosition:(CGPoint)newPosition;
 - (void) moveTo:(BMMapObject *)mapObject;
 - (void) move:(BMDirection)direction;
 
