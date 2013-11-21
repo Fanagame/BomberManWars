@@ -102,11 +102,13 @@
 }
 
 - (void) killCharacter:(BMCharacter *)character {
-    NSMutableDictionary *blob = [[NSMutableDictionary alloc] init];
-    blob[@"character_owner_id"] = character.player.gameCenterId;
-    blob[@"character_position"] = [NSValue valueWithCGPoint:character.position];
-    
-    [self sendPacket:kPacketTypeCharacterDied withBlob:blob fastMode:NO toPlayerIds:nil];
+    if (self.multiplayerEnabled) {
+        NSMutableDictionary *blob = [[NSMutableDictionary alloc] init];
+        blob[@"character_owner_id"] = character.player.gameCenterId;
+        blob[@"character_position"] = [NSValue valueWithCGPoint:character.position];
+        
+        [self sendPacket:kPacketTypeCharacterDied withBlob:blob fastMode:NO toPlayerIds:nil];
+    }
 }
 
 - (void) updatePlayersPosition {

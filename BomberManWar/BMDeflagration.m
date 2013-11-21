@@ -79,7 +79,8 @@
         node.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:node.physicsSize];
         node.physicsBody.categoryBitMask = kPhysicsCategory_Deflagration;
         node.physicsBody.collisionBitMask = 0;
-        node.physicsBody.dynamic = NO;
+        node.physicsBody.contactTestBitMask = kPhysicsCategory_Bomb;
+//        node.physicsBody.dynamic = NO;
     }
 }
 
@@ -113,72 +114,51 @@
     // Then add all the other explosion sprites
     for (int i = 1; i <= self.maxSize; i++) {
         CGPoint nextPos = CGPointZero;
-        CGPoint worldPos = CGPointZero;
-        SKPhysicsBody *collisionBody = nil;
         
         // left
         if (!leftProgressionStopped) {
             nextPos = CGPointMake(- i * (tileSize.width), 0);
-            worldPos = [self.scene convertPoint:nextPos fromNode:self];
-            collisionBody = [self.scene.physicsWorld bodyInRect:CGRectMake(worldPos.x, worldPos.y, tileSize.width * PHYSICS_COLLISION_EXPLOSION_SIZE_DOWNSCALING_FACTOR, tileSize.height * PHYSICS_COLLISION_EXPLOSION_SIZE_DOWNSCALING_FACTOR)];
-            if (!collisionBody || (collisionBody && collisionBody.categoryBitMask != kPhysicsCategory_Wall)) {
-                n = [n copy];
-                n.position = nextPos;
-                [self addChild:n];
-                [self.deflagrationSprites addObject:n];
-                [n runAction:self.deflagrationAction];
-            } else {
-                leftProgressionStopped = YES;
-            }
+            [self tryToPropagateDeflagrationAtPosition:nextPos usingBaseDeflagration:n andPropagationFlag:&leftProgressionStopped];
         }
         
         // right
         if (!rightProgressionStopped) {
             nextPos = CGPointMake(i * (tileSize.width), 0);
-            worldPos = [self.scene convertPoint:nextPos fromNode:self];
-            collisionBody = [self.scene.physicsWorld bodyInRect:CGRectMake(worldPos.x, worldPos.y, tileSize.width * PHYSICS_COLLISION_EXPLOSION_SIZE_DOWNSCALING_FACTOR, tileSize.height * PHYSICS_COLLISION_EXPLOSION_SIZE_DOWNSCALING_FACTOR)];
-            if (!collisionBody || (collisionBody && collisionBody.categoryBitMask != kPhysicsCategory_Wall)) {
-                n = [n copy];
-                n.position = nextPos;
-                [self addChild:n];
-                [self.deflagrationSprites addObject:n];
-                [n runAction:self.deflagrationAction];
-            } else {
-                rightProgressionStopped = YES;
-            }
+            [self tryToPropagateDeflagrationAtPosition:nextPos usingBaseDeflagration:n andPropagationFlag:&rightProgressionStopped];
         }
         
         // up
         if (!upProgressionStopped) {
             nextPos = CGPointMake(0, - i * (tileSize.height));
-            worldPos = [self.scene convertPoint:nextPos fromNode:self];
-            collisionBody = [self.scene.physicsWorld bodyInRect:CGRectMake(worldPos.x, worldPos.y, tileSize.width * PHYSICS_COLLISION_EXPLOSION_SIZE_DOWNSCALING_FACTOR, tileSize.height * PHYSICS_COLLISION_EXPLOSION_SIZE_DOWNSCALING_FACTOR)];
-            if (!collisionBody || (collisionBody && collisionBody.categoryBitMask != kPhysicsCategory_Wall)) {
-                n = [n copy];
-                n.position = nextPos;
-                [self addChild:n];
-                [self.deflagrationSprites addObject:n];
-                [n runAction:self.deflagrationAction];
-            } else {
-                upProgressionStopped = YES;
-            }
+            [self tryToPropagateDeflagrationAtPosition:nextPos usingBaseDeflagration:n andPropagationFlag:&upProgressionStopped];
         }
-        
+
         // down
         if (!downProgressionStopped) {
             nextPos = CGPointMake(0, i * (tileSize.height));
-            worldPos = [self.scene convertPoint:nextPos fromNode:self];
-            collisionBody = [self.scene.physicsWorld bodyInRect:CGRectMake(worldPos.x, worldPos.y, tileSize.width * PHYSICS_COLLISION_EXPLOSION_SIZE_DOWNSCALING_FACTOR, tileSize.height * PHYSICS_COLLISION_EXPLOSION_SIZE_DOWNSCALING_FACTOR)];
-            if (!collisionBody || (collisionBody && collisionBody.categoryBitMask != kPhysicsCategory_Wall)) {
-                n = [n copy];
-                n.position = nextPos;
-                [self addChild:n];
-                [self.deflagrationSprites addObject:n];
-                [n runAction:self.deflagrationAction];
-            } else {
-                downProgressionStopped = YES;
-            }
+            [self tryToPropagateDeflagrationAtPosition:nextPos usingBaseDeflagration:n andPropagationFlag:&downProgressionStopped];
         }
+    }
+}
+
+- (void) tryToPropagateDeflagrationAtPosition:(CGPoint)newPosition usingBaseDeflagration:(SKSpriteNode *)baseNode andPropagationFlag:(BOOL *)progressionStopped {
+    
+    SKTexture *texture = [self defaultTexture];
+    CGSize tileSize = texture.size;
+    
+    CGPoint worldPos = [self.scene convertPoint:newPosition fromNode:self];
+    
+    SKPhysicsBody *collisionBody = [self.scene.physicsWorld bodyInRect:CGRectMake(worldPos.x, worldPos.y, tileSize.width * PHYSICS_COLLISION_EXPLOSION_SIZE_DOWNSCALING_FACTOR, tileSize.height * PHYSICS_COLLISION_EXPLOSION_SIZE_DOWNSCALING_FACTOR)];
+    
+    if (!collisionBody || (collisionBody && collisionBody.categoryBitMask != kPhysicsCategory_Wall)) {
+        baseNode = [baseNode copy];
+        baseNode.position = newPosition;
+        [self addChild:baseNode];
+        [self updatePhysicsForNode:baseNode];
+        [self.deflagrationSprites addObject:baseNode];
+        [baseNode runAction:self.deflagrationAction];
+    } else {
+        *progressionStopped = YES;
     }
 }
 

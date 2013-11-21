@@ -91,8 +91,9 @@ NSString * const kBombExplodedNotificationName = @"kBombExplodedNotificationName
     if (self.gameScene.world) {
         self.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:self.physicsSize];
         self.physicsBody.categoryBitMask = kPhysicsCategory_Bomb;
-        self.physicsBody.collisionBitMask = 0; //kPhysicsCategory_Wall; // is it worth it?
-        self.physicsBody.contactTestBitMask = kPhysicsCategory_Deflagration;
+//        self.physicsBody.collisionBitMask = kPhysicsCategory_Character; // is it worth it?
+//        self.physicsBody.contactTestBitMask = kPhysicsCategory_Deflagration;
+        self.physicsBody.dynamic = NO;
     }
 }
 
@@ -201,7 +202,7 @@ NSString * const kBombExplodedNotificationName = @"kBombExplodedNotificationName
         [self.deflagration deflagrateWithCompletionHandler:^{
             [weakSelf didExplode];
         }];
-    } else {
+    } else if (self.state != kBombStateExploding) {
         NSLog(@"Can't explode. Current state is: %d", self.state);
     }
 }

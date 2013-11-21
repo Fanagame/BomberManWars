@@ -23,7 +23,7 @@ CFTimeInterval const kCharacterMovingDuration = 0.5;
     NSMutableArray *_walkingRightFrames;
     NSMutableArray *_dyingFrames;
 }
-
+@property (nonatomic, strong) NSDate *lastKeepMovingUpdateDate;
 @property (nonatomic, strong) SKAction *baseLeftMoveAction;
 @property (nonatomic, strong) SKAction *baseRightMoveAction;
 @property (nonatomic, strong) SKAction *baseUpMoveAction;
@@ -145,7 +145,7 @@ CFTimeInterval const kCharacterMovingDuration = 0.5;
         
         hitBoxNode.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:hitBoxNode.physicsSize];
         hitBoxNode.physicsBody.categoryBitMask = kPhysicsCategory_Character;
-        hitBoxNode.physicsBody.collisionBitMask = kPhysicsCategory_Wall;
+        hitBoxNode.physicsBody.collisionBitMask = kPhysicsCategory_Wall | kPhysicsCategory_Bomb;
 #ifdef CHAR_LOCAL_PLAYER_IS_INVINCIBLE
         if (self.player != [BMPlayer localPlayer]) {
 #endif
@@ -315,20 +315,31 @@ CFTimeInterval const kCharacterMovingDuration = 0.5;
 // this is only called to update from server
 - (void) updateDirection:(BMDirection)direction {
     
+    self.lastKeepMovingUpdateDate = [[NSDate alloc] initWithTimeIntervalSinceNow:0];
+    
     if (direction != self.currentDirection) {
         [self removeAllActions];
         
         self.currentDirection = direction;
         self.state = kPlayerStateStandby;
         
+        // is this really a good idea?
+        __weak BMCharacter *weakSelf = self;
+        id onComplete = ^{
+            if (-[weakSelf.lastKeepMovingUpdateDate timeIntervalSinceNow] > 0.5) {
+                [weakSelf removeAllActions];
+                [weakSelf updateDefaultSprite];
+            }
+        };
+        
         if (direction == kDirectionLeft) {
-            [self runAction:self.baseLeftMoveAction];
+            [self runAction:self.baseLeftMoveAction completion:onComplete];
         } else if (direction == kDirectionRight) {
-            [self runAction:self.baseRightMoveAction];
+            [self runAction:self.baseRightMoveAction completion:onComplete];
         } else if (direction == kDirectionDown) {
-            [self runAction:self.baseDownMoveAction];
+            [self runAction:self.baseDownMoveAction completion:onComplete];
         } else if (direction == kDirectionUp) {
-            [self runAction:self.baseUpMoveAction];
+            [self runAction:self.baseUpMoveAction completion:onComplete];
         }
     }
 }
@@ -391,12 +402,17 @@ CFTimeInterval const kCharacterMovingDuration = 0.5;
             [self removeAllActions];
             self.state = kPlayerStateDying;
             
-            bomb.owner.player.score++;
+            // we score points only if we kill someone else, not if we kill ourselves
+            if (bomb.owner.player != self.player)
+                bomb.owner.player.score++;
+            else
+                self.player.score--;
             
             __weak BMCharacter *weakSelf = self;
             [self runAction:self.dyingAction completion:^{
                 weakSelf.state = kPlayerStateStandby;
                 weakSelf.currentDirection = kDirectionNone;
+                [weakSelf updateDefaultSprite];
                 [weakSelf runAction:[SKAction setTexture:[weakSelf defaultTexture]]];
                 weakSelf.intelligence.target = nil;
                 
@@ -415,6 +431,7 @@ CFTimeInterval const kCharacterMovingDuration = 0.5;
         [self runAction:self.dyingAction completion:^{
             weakSelf.state = kPlayerStateStandby;
             weakSelf.currentDirection = kDirectionNone;
+            [weakSelf updateDefaultSprite];
             [weakSelf runAction:[SKAction setTexture:[weakSelf defaultTexture]]];
             weakSelf.intelligence.target = nil;
         }];

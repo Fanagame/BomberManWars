@@ -8,6 +8,7 @@
 
 #import "BMOptionsViewController.h"
 #import "BMGameViewController.h"
+#import "BMConstants.h"
 
 NSString * const kStartGameSegueName = @"startGame";
 
@@ -62,7 +63,10 @@ NSString * const kStartGameSegueName = @"startGame";
     self.isClient = NO; // reset the status
     
     [[BMMultiplayerManager sharedManager] startBeingAvailableForAGame];
+    
+#ifndef DISABLE_GAMECENTER_AUTOCONNECT
     [self tryAuthenticatingToGameCenter];
+#endif
 }
 
 - (void) enableMultiplayer {

@@ -15,7 +15,7 @@
 @implementation BMSpawn
 
 - (void) setup {
-    self.color = [UIColor redColor];
+//    self.color = [UIColor redColor];
     self.intelligence = [[BMSpawnAI alloc] initWithCharacter:self andTarget:nil];
 }
 

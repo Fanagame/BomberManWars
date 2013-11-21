@@ -80,7 +80,11 @@ NSString * const kHUDDropBombButtonPressedNotificationName = @"kHUDDropBombButto
     
     // local player name in top left
     self.playerNameLabel = [[SKLabelNode alloc] initWithFontNamed:@"Helvetica Neue Ultralight"];
-    self.playerNameLabel.text = [NSString stringWithFormat:@"%@ (%@)", [BMPlayer localPlayer].displayName, [BMPlayer localPlayer].gameCenterId];
+    if ([BMPlayer localPlayer].gameCenterId) {
+        self.playerNameLabel.text = [NSString stringWithFormat:@"%@ (%@)", [BMPlayer localPlayer].displayName, [BMPlayer localPlayer].gameCenterId];
+    } else {
+        self.playerNameLabel.text = [NSString stringWithFormat:@"%@", [BMPlayer localPlayer].displayName];
+    }
     self.playerNameLabel.color = [UIColor whiteColor];
     self.playerNameLabel.fontSize = 20.0 / [UIScreen mainScreen].scale;
     self.playerNameLabel.position = CGPointMake(origin.x + self.playerNameLabel.calculateAccumulatedFrame.size.width * 0.5, -origin.y - self.topOverlayHeight + 5 / [UIScreen mainScreen].scale);
