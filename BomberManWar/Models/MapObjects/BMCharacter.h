@@ -10,7 +10,7 @@
 
 typedef enum BMPlayerState : NSUInteger { kPlayerStateStandby, kPlayerStateDying, kPlayerStateRespawning, kPlayerStateMoving, kPlayerCalculatingPath } BMPlayerState;
 
-@class BMSpawn, BMPlayer, BMMapObject;
+@class BMSpawn, BMPlayer, BMMapObject, BMBomb;
 
 @interface BMCharacter : BMMapObject
 
@@ -32,10 +32,12 @@ typedef enum BMPlayerState : NSUInteger { kPlayerStateStandby, kPlayerStateDying
 //- (void) spawnAnimated:(BOOL)animated;
 //- (void) spawn:(BMSpawn *)spawn;
 //- (void) spawn:(BMSpawn *)spawn animated:(BOOL)animated;
-- (void) die;
+- (void) dieFromBomb:(BMBomb *)bomb;
+- (void) killFromServerSync;
 - (void) dropBomb;
 //- (void) shootBomb;
 //- (void) grabBonus;
+- (void) updateDirection:(BMDirection)direction; // server bound
 - (void) moveToPosition:(CGPoint)newPosition;
 - (void) moveTo:(BMMapObject *)mapObject;
 - (void) move:(BMDirection)direction;

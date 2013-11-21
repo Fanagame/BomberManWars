@@ -24,6 +24,11 @@ CFTimeInterval const kCharacterMovingDuration = 0.5;
     NSMutableArray *_dyingFrames;
 }
 
+@property (nonatomic, strong) SKAction *baseLeftMoveAction;
+@property (nonatomic, strong) SKAction *baseRightMoveAction;
+@property (nonatomic, strong) SKAction *baseUpMoveAction;
+@property (nonatomic, strong) SKAction *baseDownMoveAction;
+
 @property (nonatomic, strong) SKAction *leftMoveAction;
 @property (nonatomic, strong) SKAction *rightMoveAction;
 @property (nonatomic, strong) SKAction *upMoveAction;
@@ -163,7 +168,10 @@ CFTimeInterval const kCharacterMovingDuration = 0.5;
 - (void) collidedWith:(SKPhysicsBody *)body contact:(SKPhysicsContact *)contact {
     [super collidedWith:body contact:contact];
     
-    [self die];
+    if ([body.node.parent.parent isKindOfClass:[BMBomb class]]) {
+        BMBomb *b = (BMBomb *)body.node.parent.parent;
+        [self dieFromBomb:b];
+    }
 }
 
 - (void) stoppedCollidingWith:(SKPhysicsBody *)body contact:(SKPhysicsContact *)contact {
@@ -173,30 +181,58 @@ CFTimeInterval const kCharacterMovingDuration = 0.5;
 
 #pragma mark - Cached actions
 
+- (SKAction *) baseLeftMoveAction {
+    if (!_baseLeftMoveAction) {
+        _baseLeftMoveAction = [SKAction repeatActionForever:[SKAction animateWithTextures:_walkingLeftFrames timePerFrame:0.15]];
+    }
+    return _baseLeftMoveAction;
+}
+
 - (SKAction *) leftMoveAction {
     if (!_leftMoveAction) {
-        _leftMoveAction = [SKAction group:@[[SKAction repeatActionForever:[SKAction moveByX:-kCharacterMovingSpeed y:0 duration:kCharacterMovingDuration]], [SKAction repeatActionForever:[SKAction animateWithTextures:_walkingLeftFrames timePerFrame:0.15]]]];
+        _leftMoveAction = [SKAction group:@[[SKAction repeatActionForever:[SKAction moveByX:-kCharacterMovingSpeed y:0 duration:kCharacterMovingDuration]], self.baseLeftMoveAction]];
     }
     return _leftMoveAction;
 }
 
+- (SKAction *) baseRightMoveAction {
+    if (!_baseRightMoveAction) {
+        _baseRightMoveAction = [SKAction repeatActionForever:[SKAction animateWithTextures:_walkingRightFrames timePerFrame:0.15]];
+    }
+    return _baseRightMoveAction;
+}
+
 - (SKAction *) rightMoveAction {
     if (!_rightMoveAction) {
-        _rightMoveAction = [SKAction group:@[[SKAction repeatActionForever:[SKAction moveByX:kCharacterMovingSpeed y:0 duration:kCharacterMovingDuration]], [SKAction repeatActionForever:[SKAction animateWithTextures:_walkingRightFrames timePerFrame:0.15]]]];
+        _rightMoveAction = [SKAction group:@[[SKAction repeatActionForever:[SKAction moveByX:kCharacterMovingSpeed y:0 duration:kCharacterMovingDuration]], self.baseRightMoveAction]];
     }
     return _rightMoveAction;
 }
 
+- (SKAction *) baseUpMoveAction {
+    if (!_baseUpMoveAction) {
+        _baseUpMoveAction = [SKAction repeatActionForever:[SKAction animateWithTextures:_walkingUpFrames timePerFrame:0.15]];
+    }
+    return _baseUpMoveAction;
+}
+
 - (SKAction *) upMoveAction {
     if (!_upMoveAction) {
-        _upMoveAction = [SKAction group:@[[SKAction repeatActionForever:[SKAction moveByX:0 y:kCharacterMovingSpeed duration:kCharacterMovingDuration]], [SKAction repeatActionForever:[SKAction animateWithTextures:_walkingUpFrames timePerFrame:0.15]]]];
+        _upMoveAction = [SKAction group:@[[SKAction repeatActionForever:[SKAction moveByX:0 y:kCharacterMovingSpeed duration:kCharacterMovingDuration]], self.baseUpMoveAction]];
     }
     return _upMoveAction;
 }
 
+- (SKAction *) baseDownMoveAction {
+    if (!_baseDownMoveAction) {
+        _baseDownMoveAction = [SKAction repeatActionForever:[SKAction animateWithTextures:_walkingDownFrames timePerFrame:0.15]];
+    }
+    return _baseDownMoveAction;
+}
+
 - (SKAction *) downMoveAction {
     if (!_downMoveAction) {
-        _downMoveAction = [SKAction group:@[[SKAction repeatActionForever:[SKAction moveByX:0 y:-kCharacterMovingSpeed duration:kCharacterMovingDuration]], [SKAction repeatActionForever:[SKAction animateWithTextures:_walkingDownFrames timePerFrame:0.15]]]];
+        _downMoveAction = [SKAction group:@[[SKAction repeatActionForever:[SKAction moveByX:0 y:-kCharacterMovingSpeed duration:kCharacterMovingDuration]], self.baseDownMoveAction]];
     }
     return _downMoveAction;
 }
@@ -270,8 +306,31 @@ CFTimeInterval const kCharacterMovingDuration = 0.5;
 }
 
 - (void) moveToPosition:(CGPoint)newPosition {
-    [self removeAllActions];
+//    [self removeAllActions];
+//    [self updateDefaultSprite];
+    self.state = kPlayerStateStandby;
     [self runAction:[SKAction moveTo:newPosition duration:0.10]];
+}
+
+// this is only called to update from server
+- (void) updateDirection:(BMDirection)direction {
+    
+    if (direction != self.currentDirection) {
+        [self removeAllActions];
+        
+        self.currentDirection = direction;
+        self.state = kPlayerStateStandby;
+        
+        if (direction == kDirectionLeft) {
+            [self runAction:self.baseLeftMoveAction];
+        } else if (direction == kDirectionRight) {
+            [self runAction:self.baseRightMoveAction];
+        } else if (direction == kDirectionDown) {
+            [self runAction:self.baseDownMoveAction];
+        } else if (direction == kDirectionUp) {
+            [self runAction:self.baseUpMoveAction];
+        }
+    }
 }
 
 - (void) move:(BMDirection)direction {
@@ -282,10 +341,11 @@ CFTimeInterval const kCharacterMovingDuration = 0.5;
         
         if (direction == kDirectionNone) {
             [self removeAllActions];
+            self.state = kPlayerStateStandby;
             return;
         }
         
-        if (self.state == kPlayerStateStandby) {
+        if (self.state == kPlayerStateStandby || self.state == kPlayerStateMoving) {
             if (direction == kDirectionRight) {
                 moveAction = self.rightMoveAction;
             } else if (direction == kDirectionLeft) {
@@ -325,8 +385,29 @@ CFTimeInterval const kCharacterMovingDuration = 0.5;
     }
 }
 
-- (void) die {
-    if (self.state != kPlayerStateDying && self.state != kPlayerStateRespawning) {
+- (void) dieFromBomb:(BMBomb *)bomb {
+    if (!self.gameScene.multiplayerEnabled || (self.gameScene.multiplayerEnabled && !self.gameScene.isClient)) {
+        if (self.state != kPlayerStateDying) {
+            [self removeAllActions];
+            self.state = kPlayerStateDying;
+            
+            bomb.owner.player.score++;
+            
+            __weak BMCharacter *weakSelf = self;
+            [self runAction:self.dyingAction completion:^{
+                weakSelf.state = kPlayerStateStandby;
+                weakSelf.currentDirection = kDirectionNone;
+                [weakSelf runAction:[SKAction setTexture:[weakSelf defaultTexture]]];
+                weakSelf.intelligence.target = nil;
+                
+                [weakSelf.gameScene sync];
+                [weakSelf.gameScene killCharacter:weakSelf];
+            }];
+        }
+    }
+}
+
+- (void) killFromServerSync {
         [self removeAllActions];
         self.state = kPlayerStateDying;
         
@@ -336,10 +417,7 @@ CFTimeInterval const kCharacterMovingDuration = 0.5;
             weakSelf.currentDirection = kDirectionNone;
             [weakSelf runAction:[SKAction setTexture:[weakSelf defaultTexture]]];
             weakSelf.intelligence.target = nil;
-            
-            [weakSelf.gameScene sync];
         }];
-    }
 }
 
 - (void) bombDidExplode:(NSNotification *)notification {

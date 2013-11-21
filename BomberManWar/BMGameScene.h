@@ -74,5 +74,6 @@ typedef void (^BMAssetLoadCompletionHandler)(void);
 - (NSArray *) playersWithoutCharactersOnMap;
 - (void) sendPlantedBomb:(BMBomb *)bomb;
 - (void) sync;
+- (void) killCharacter:(BMCharacter *)character;
 
 @end

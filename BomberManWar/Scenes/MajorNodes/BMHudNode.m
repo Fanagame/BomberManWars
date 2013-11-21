@@ -104,6 +104,17 @@ NSString * const kHUDDropBombButtonPressedNotificationName = @"kHUDDropBombButto
     self.dropBombButton.frame = CGRectMake(self.gameScene.size.width - 64 - 20, self.gameScene.size.height - 64 - 20, 64, 64);
     [self.dropBombButton addTarget:self action:@selector(didTapDropBomb) forControlEvents:UIControlEventTouchUpInside];
     [self.gameScene.view addSubview:self.dropBombButton];
+}
+
+- (void) updateLives {
+    self.playerLivesLabel.text = [NSString stringWithFormat:@"Lives: %d", 0];
+}
+
+- (void) updateScores {
+    BMGameScene *scene = self.gameScene;
+    
+    [self.playersOverlayNode removeAllChildren];
+    [self.playersOverlayNode removeFromParent];
     
 #ifndef HUD_ALWAYS_SHOW_PLAYERS_OVERLAY
     if (self.gameScene.multiplayerEnabled) {
@@ -114,7 +125,7 @@ NSString * const kHUDDropBombButtonPressedNotificationName = @"kHUDDropBombButto
         self.playersOverlayNode.strokeColor = [UIColor clearColor];
         self.playersOverlayNode.alpha = 0.7;
         self.playersOverlayNode.position = CGPointMake((scene.size.width * 0.5) - OVERLAY_WIDTH/ [UIScreen mainScreen].scale - PADDING, 0);
-        path = CGPathCreateWithRect(CGRectMake(0, 0, OVERLAY_WIDTH/ [UIScreen mainScreen].scale, OVERLAY_HEIGHT/ [UIScreen mainScreen].scale), NULL);
+        CGPathRef path = CGPathCreateWithRect(CGRectMake(0, 0, OVERLAY_WIDTH/ [UIScreen mainScreen].scale, OVERLAY_HEIGHT/ [UIScreen mainScreen].scale), NULL);
         self.playersOverlayNode.path = path;
         CGPathRelease(path);
         [self addChild:self.playersOverlayNode];
@@ -127,7 +138,7 @@ NSString * const kHUDDropBombButtonPressedNotificationName = @"kHUDDropBombButto
             label.fontSize = 18.0 / [UIScreen mainScreen].scale;
             label.horizontalAlignmentMode = SKLabelHorizontalAlignmentModeLeft;
             label.verticalAlignmentMode = SKLabelVerticalAlignmentModeTop;
-            label.text = [NSString stringWithFormat:@"%@: 0 pts", p.displayName];
+            label.text = [NSString stringWithFormat:@"%@: %ld pts", p.displayName, (long)p.score];
             label.position = CGPointMake(0, currentY + self.playersOverlayNode.frame.size.height);
             [self.playersOverlayNode addChild:label];
             
@@ -146,10 +157,6 @@ NSString * const kHUDDropBombButtonPressedNotificationName = @"kHUDDropBombButto
 #ifndef HUD_ALWAYS_SHOW_PLAYERS_OVERLAY
     }
 #endif
-}
-
-- (void) updateLives {
-    self.playerLivesLabel.text = [NSString stringWithFormat:@"Lives: %d", 0];
 }
 
 #pragma mark - Buttons actions

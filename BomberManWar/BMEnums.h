@@ -52,5 +52,6 @@ typedef enum : uint8_t {
     kPacketTypeGameReadyAcknowledgment,
     kPacketTypeSync,
     kPacketTypeUpdatePosition,
-    kPacketTypeBombPlanted
+    kPacketTypeBombPlanted,
+    kPacketTypeCharacterDied
 } BMPacketType;

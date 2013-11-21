@@ -25,5 +25,6 @@ extern NSString * const kHUDDropBombButtonPressedNotificationName;
 @property (nonatomic, strong) NSArray *players;
 
 - (void) didMoveToScene;
+- (void) updateScores;
 
 @end

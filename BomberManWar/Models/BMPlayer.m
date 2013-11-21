@@ -42,19 +42,32 @@ static BMPlayer *_localPlayer;
     dic[@"remainingLives"] = [NSNumber numberWithInteger:self.remainingLives];
     dic[@"character_position"] = [NSValue valueWithCGPoint:self.character.position];
     dic[@"character_colorized"] = [NSNumber numberWithBool:(self == [BMPlayer localPlayer] ? NO : YES)];
+    dic[@"character_direction"] = [NSNumber numberWithInt:self.character.currentDirection];
     
     self.lastPositionSentToPeers = self.character.position;
     
     return dic;
 }
 
+- (void) setScore:(NSInteger)score {
+    if (_score != score) {
+        _score = score;
+        
+        [self.character.gameScene.hud updateScores];
+    }
+}
+
 - (void) updateWithBlob:(NSDictionary *)blob {
-    NSLog(@"updateWithBlob");
-//    NSLog(@"before update: %@", self);
+//    NSLog(@"updateWithBlob");
+//    NSLog(@"before update on %@: %@", [UIDevice currentDevice].name, self);
     self.score = [blob[@"score"] integerValue];
     self.remainingLives = [blob[@"remainingLives"] integerValue];
     
     self.character.isColorized = [blob[@"character_colorized"] boolValue];
+    
+    if (blob[@"character_direction"]) {
+        [self.character updateDirection:[blob[@"character_direction"] integerValue]];
+    }
     
     if (blob[@"character_position"]) {
         [self.character moveToPosition:[((NSValue *)blob[@"character_position"]) CGPointValue]];
@@ -64,7 +77,7 @@ static BMPlayer *_localPlayer;
     }
     
     [self.character updatePhysics];
-//    NSLog(@"after update: %@", self);
+//    NSLog(@"after update on %@: %@", [UIDevice currentDevice].name, self);
 }
 
 - (NSString *)description {

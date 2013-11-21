@@ -20,6 +20,7 @@
 #import "BMConstants.h"
 #import "BMMultiplayerManager.h"
 #import "BMBomb.h"
+#import "BMCharacter.h"
 
 @interface BMGameScene () {
     CGSize _cachedMapSizeForCamera;
@@ -80,7 +81,7 @@
 
 - (void) startupNetwork {
     self.retryTimeInterval = 1;
-    self.timeIntervalPositionUpdate = 0.10;
+    self.timeIntervalPositionUpdate = 0.05;
     
     self.opponentsKnowingWereReady = [[NSMutableDictionary alloc] init];
     self.opponentsReady = [[NSMutableDictionary alloc] init];
@@ -98,6 +99,14 @@
             [self sendPacket:kPacketTypeGameReadyAnnouncement withBlob:nil toPlayerIds:[self playerIdsNotKnowingWereReady]];
         }
     }
+}
+
+- (void) killCharacter:(BMCharacter *)character {
+    NSMutableDictionary *blob = [[NSMutableDictionary alloc] init];
+    blob[@"character_owner_id"] = character.player.gameCenterId;
+    blob[@"character_position"] = [NSValue valueWithCGPoint:character.position];
+    
+    [self sendPacket:kPacketTypeCharacterDied withBlob:blob fastMode:NO toPlayerIds:nil];
 }
 
 - (void) updatePlayersPosition {
@@ -207,10 +216,19 @@
     } else if (packet.packetType == kPacketTypeBombPlanted) {
         NSLog(@"Received kPacketTypeBombPlanted on %@ from %@", deviceName, playerID);
         [self handleBombPlanted:packet.blob];
+    } else if (packet.packetType == kPacketTypeCharacterDied) {
+        NSLog(@"Received kPacketTypeCharacterDied on %@ from %@", deviceName, playerID);
+        [self handleCharacterDied:packet.blob];
     }
     else {
         NSLog(@"Unknown packet received on %@ from %@: %d", deviceName, playerID, packet.packetType);
     }
+}
+
+- (void) handleCharacterDied:(NSDictionary *)blob {
+    BMPlayer *player = [self playerForGameCenterId:blob[@"character_owner_id"]];
+    [player.character moveToPosition:[blob[@"character_position"] CGPointValue]];
+    [player.character killFromServerSync];
 }
 
 - (void) handleBombPlanted:(NSDictionary *)blob {
@@ -248,6 +266,7 @@
                 }
                 [player updateWithBlob:playerBlob];
             }
+            [self.hud updateScores];
         } else {
             NSLog(@"players key is not an array");
         }
