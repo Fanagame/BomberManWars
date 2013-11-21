@@ -643,10 +643,9 @@
     CGPoint scenePos = [self convertPoint:pos fromNode:self.world];
     
     SKPhysicsBody *body = [self.physicsWorld bodyAtPoint:scenePos];
-    if (body && body.categoryBitMask == kPhysicsCategory_Wall) {
+    if (body && (body.categoryBitMask == kPhysicsCategory_Wall || body.categoryBitMask == kPhysicsCategory_Deflagration || body.categoryBitMask == kPhysicsCategory_Deflagration)) {
         walkable = NO;
     }
-
     
 //#ifndef kTDGameScene_DISABLE_WALKABLE_CHECK
 //    if (self.backgroundMap.mainLayer.layerInfo) {

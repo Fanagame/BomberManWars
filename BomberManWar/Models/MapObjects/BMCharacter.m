@@ -70,6 +70,8 @@ CFTimeInterval const kCharacterMovingDuration = 0.5;
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updatePhysics) name:kCameraZoomChangedNotificationName object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(bombDidExplode:) name:kBombExplodedNotificationName object:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pathDidUpdate:) name:kBMPathFindingPathWasInvalidatedNotificationName object:nil];
 	}
 	
 	return self;
@@ -149,11 +151,20 @@ CFTimeInterval const kCharacterMovingDuration = 0.5;
 #ifdef CHAR_LOCAL_PLAYER_IS_INVINCIBLE
         if (self.player != [BMPlayer localPlayer]) {
 #endif
-            hitBoxNode.physicsBody.contactTestBitMask = kPhysicsCategory_Deflagration;
+            hitBoxNode.physicsBody.contactTestBitMask = kPhysicsCategory_Deflagration | kPhysicsCategory_Bomb;
 #ifdef CHAR_LOCAL_PLAYER_IS_INVINCIBLE
         }
 #endif
         hitBoxNode.physicsBody.allowsRotation = NO;
+    }
+}
+
+- (void) pathDidUpdate:(NSNotification *)notification {
+    if ([notification.object isKindOfClass:[BMPath class]] && self.player.isAI) {
+        [self removeAllActions];
+        self.intelligence.target = nil;
+        [((BMCharacterAI *)self.intelligence) setMoveNow:YES];
+        self.state = kPlayerStateStandby;
     }
 }
 
@@ -281,20 +292,28 @@ CFTimeInterval const kCharacterMovingDuration = 0.5;
         
         CGPoint selfCoord = [self.gameScene tileCoordinatesForPositionInMap:self.position];
         CGPoint destCoord = [self.gameScene tileCoordinatesForPositionInMap:mapObject.position];
-        
+
+        __weak BMCharacter *weakSelf = self;
         [[BMPathFinder sharedPathCache] pathInExplorableWorld:self.gameScene fromA:selfCoord toB:destCoord usingDiagonal:NO onSuccess:^(BMPath *path) {
-            __weak BMCharacter *weakSelf = self;
             weakSelf.state = kPlayerStateStandby;
 
             if (path.positionsPathArray.count > 0) {
+                CGPoint _lastPosition = self.position;
                 NSMutableArray *moveActions = [[NSMutableArray alloc] init];
+                NSMutableArray *animateActions = [[NSMutableArray alloc] init];
                 for (PathNode *node in path.positionsPathArray) {
-                    SKAction *action = [SKAction moveTo:node.position duration:0.5];
+                    SKAction *moveAction = [self actionForDirectionBetweenPointA:_lastPosition andPointB:node.position];
+                    SKAction *action = [SKAction moveTo:node.position duration:0.4];
+                    
+                    if (moveAction) {
+                        [animateActions addObject:moveAction];
+                    }
+                    
                     [moveActions addObject:action];
                 }
                 
                 weakSelf.state = kPlayerStateMoving;
-                [self runAction:[SKAction sequence:moveActions] completion:^{
+                [weakSelf runAction:[SKAction group:@[[SKAction sequence:moveActions], [SKAction sequence:animateActions]]] completion:^{
                     weakSelf.intelligence.target = nil;
                     weakSelf.state = kPlayerStateStandby;
                 }];
@@ -303,6 +322,25 @@ CFTimeInterval const kCharacterMovingDuration = 0.5;
             }
         }];
     }
+}
+
+- (SKAction *) actionForDirectionBetweenPointA:(CGPoint)pointA andPointB:(CGPoint)pointB {
+    NSTimeInterval moveDuration = 0.4;
+    NSTimeInterval t = moveDuration / _walkingDownFrames.count;
+    
+    if (pointA.x > pointB.x) {
+        return [SKAction animateWithTextures:_walkingLeftFrames timePerFrame:t];
+    } else if (pointA.x < pointB.x) {
+        return [SKAction animateWithTextures:_walkingRightFrames timePerFrame:t];
+    }
+    
+    if (pointA.y < pointB.y) {
+        return [SKAction animateWithTextures:_walkingUpFrames timePerFrame:t];
+    } else if (pointA.y > pointB.y) {
+        return [SKAction animateWithTextures:_walkingDownFrames timePerFrame:t];
+    }
+    
+    return [SKAction animateWithTextures:_walkingDownFrames timePerFrame:t];
 }
 
 - (void) moveToPosition:(CGPoint)newPosition {
@@ -390,6 +428,11 @@ CFTimeInterval const kCharacterMovingDuration = 0.5;
         [b updatePhysics];
         [b startTicking];
         [self.currentBombs addObject:b];
+        
+        // invalidate the path for the AI
+        if (!self.gameScene.multiplayerEnabled) {
+            [[BMPathFinder sharedPathCache] invalidateAllPaths];
+        }
         
         if (self.gameScene.multiplayerEnabled)
             [self.gameScene sendPlantedBomb:b];

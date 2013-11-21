@@ -152,6 +152,12 @@ static BMPathFinder *_sharedPathCache;
 
 #pragma mark - Public API
 
+- (void) invalidateAllPaths {
+    for (BMPath *path in self.cachedPaths) {
+        [path invalidate];
+    }
+}
+
 - (BMPath *) pathFromSpawnPoint:(CGPoint)spawnPosition toGoalPoint:(CGPoint)goalPosition withObject:(id<ExploringObjectDelegate>)object {
     id key = [self keyForPointA:spawnPosition pointB:goalPosition objectType:[object exploringObjectType]];
     

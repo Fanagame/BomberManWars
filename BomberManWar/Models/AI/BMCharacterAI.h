@@ -10,4 +10,6 @@
 
 @interface BMCharacterAI : BMArtificialIntelligence
 
+@property (nonatomic, assign) BOOL moveNow;
+
 @end

@@ -55,6 +55,7 @@ typedef void (^BMPathCallback)(BMPath *path);
 - (void) clearCache;
 - (void) removePathFromCache:(BMPath *)path;
 - (NSArray *) cachedPaths;
+- (void) invalidateAllPaths;
 
 - (void)  pathInExplorableWorld:(BMGameScene *)world fromA:(CGPoint)pointA toB:(CGPoint)pointB usingDiagonal:(BOOL)useDiagonal withObject:(id<ExploringObjectDelegate>)exploringObject onSuccess:(void (^)(BMPath *))onSuccess;
 - (void)pathInExplorableWorld:(BMGameScene *)world fromA:(CGPoint)pointA toB:(CGPoint)pointB usingDiagonal:(BOOL)useDiagonal onSuccess:(BMPathCallback)onSuccess;

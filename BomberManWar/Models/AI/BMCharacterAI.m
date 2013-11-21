@@ -23,6 +23,16 @@
 
 @implementation BMCharacterAI
 
+- (id) initWithCharacter:(BMMapObject *)character andTarget:(BMMapObject *)target {
+    self = [super initWithCharacter:character andTarget:target];
+    
+    if (self) {
+        self.moveNow = YES;
+    }
+    
+    return self;
+}
+
 - (void) updateWithTimeSinceLastUpdate:(CFTimeInterval)interval {
     [super updateWithTimeSinceLastUpdate:interval];
     
@@ -41,13 +51,14 @@
     
     CGFloat distance = [self distanceBetweenPointA:_lastKnownLocation andPointB:self.target.position];
     
-    if (distance > 50) {
+    if (distance > 150 || self.moveNow) {
+        self.moveNow = NO;
         _lastKnownLocation = self.target.position;
         // Update the pathfinding
         [c moveTo:self.target];
     }
     
-    if (distance < 30 && (!_lastDropBombDate || (_lastDropBombDate && -[_lastDropBombDate timeIntervalSinceNow] > 1))) {
+    if (distance < 30 && (!_lastDropBombDate || (_lastDropBombDate && -[_lastDropBombDate timeIntervalSinceNow] > 5))) {
         _lastDropBombDate = [[NSDate alloc] initWithTimeIntervalSinceNow:0];
         
         [c dropBomb];
@@ -60,9 +71,11 @@
         return 0;
     }
     
-    CGFloat dx = fabsf(pointA.x - pointB.x);
-    CGFloat dy = fabsf(pointA.y - pointB.y);
-    
+    CGFloat dx = pointA.x - pointB.x;
+    CGFloat dy = pointA.y - pointB.y;
+    dx = fabsf(dx);
+    dy = fabs(dy);
+
     CGFloat distance = sqrt(dx * dx + dy * dy);
     
     return distance;

@@ -185,6 +185,7 @@ NSString * const kStartGameSegueName = @"startGame";
 #pragma mark - BMGameCenterManager delegate
 
 - (void) matchStarted {
+    [UIAlertView showAlertWithMessage:@"There is no game over. The scores just keep increasing or decreasing at that point. Tap exit to return to the main menu."];
     [self performSegueWithIdentifier:kStartGameSegueName sender:nil];
 }
 

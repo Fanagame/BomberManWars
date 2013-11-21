@@ -11,6 +11,7 @@
 #import "BMCharacter.h"
 #import "BMPlayer.h"
 #import "BMConstants.h"
+#import "BMPathFinder.h"
 
 #define TICKING_ANIMATION_SPEED 0.25
 
@@ -209,6 +210,12 @@ NSString * const kBombExplodedNotificationName = @"kBombExplodedNotificationName
 
 - (void) didExplode {
     if (self.state == kBombStateExploding) {
+        
+        // invalidate the path for the AI
+        if (!self.gameScene.multiplayerEnabled) {
+            [[BMPathFinder sharedPathCache] invalidateAllPaths];
+        }
+        
         // let's remove ourselves from the game!
         [self removeFromParent]; // bye bye world
         [[NSNotificationCenter defaultCenter] postNotificationName:kBombExplodedNotificationName object:self];
