@@ -144,7 +144,7 @@ NSString * const kStartGameSegueName = @"startGame";
 }
 
 - (void) setupMultiplayer {
-    [[self gameCenterManager] findMatchWithMinPlayers:2 maxPlayers:3 viewController:self delegate:self];
+    [[self gameCenterManager] findMatchWithMinPlayers:2 maxPlayers:4 viewController:self delegate:self];
 }
 
 - (void) findNearbyPlayers {
@@ -185,7 +185,6 @@ NSString * const kStartGameSegueName = @"startGame";
 #pragma mark - BMGameCenterManager delegate
 
 - (void) matchStarted {
-    [UIAlertView showAlertWithMessage:@"There is no game over. The scores just keep increasing or decreasing at that point. Tap exit to return to the main menu."];
     [self performSegueWithIdentifier:kStartGameSegueName sender:nil];
 }
 

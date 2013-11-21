@@ -75,6 +75,8 @@
     [[BMCamera sharedCamera] setCameraToDefaultZoomLevel];
     
     [self setupGestureRecognizers];
+    
+    [UIAlertView showAlertWithMessage:@"There is no game over. The scores just keep increasing or decreasing at that point. Tap exit to return to the main menu."];
 }
 
 #pragma mark - Network stuff
