@@ -140,7 +140,7 @@ NSString * const kStartGameSegueName = @"startGame";
 }
 
 - (void) setupMultiplayer {
-    [[self gameCenterManager] findMatchWithMinPlayers:2 maxPlayers:2 viewController:self delegate:self];
+    [[self gameCenterManager] findMatchWithMinPlayers:2 maxPlayers:3 viewController:self delegate:self];
 }
 
 - (void) findNearbyPlayers {

@@ -78,21 +78,21 @@ static BMGameCenterManager *_currentSession = nil;
 {
     __weak BMGameCenterManager *weakSelf = self;
     
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [GKLocalPlayer localPlayer].authenticateHandler = ^(UIViewController *loginVC, NSError *error) {
             if ([GKLocalPlayer localPlayer].isAuthenticated) {
                 if (onComplete)
                     onComplete(YES);
             } else if (loginVC) {
-                dispatch_async(dispatch_get_main_queue(), ^{
+//                dispatch_async(dispatch_get_main_queue(), ^{
                     [weakSelf.presentingViewController presentViewController:loginVC animated:YES completion:nil];
-                });
+//                });
             } else {
                 if (onComplete)
                     onComplete(NO);
             }
         };
-    });
+//    });
 }
 
 #pragma mark -

@@ -81,7 +81,10 @@
 - (void) startupNetwork {
     self.retryTimeInterval = 1;
     self.timeIntervalPositionUpdate = 0.10;
-    self.opponentIsReady = NO;
+    
+    self.opponentsKnowingWereReady = [[NSMutableDictionary alloc] init];
+    self.opponentsReady = [[NSMutableDictionary alloc] init];
+    
     [[BMGameCenterManager currentSession] setDataDelegate:self];
 }
 
@@ -89,10 +92,10 @@
     // The game won't start until we have received a 'game is ready' from everyone
     
     // Do not send the game is ready packet once
-    if (!self.opponentKnowsWereReady) {
+    if (!self.opponentsKnowWereReady) {
         if (!self.lastTryDate || (self.lastTryDate && -[self.lastTryDate timeIntervalSinceNow] >= self.retryTimeInterval)) {
             self.lastTryDate = [[NSDate alloc] initWithTimeIntervalSinceNow:0];
-            [self sendPacket:kPacketTypeGameReadyAnnouncement withBlob:nil];
+            [self sendPacket:kPacketTypeGameReadyAnnouncement withBlob:nil toPlayerIds:[self playerIdsNotKnowingWereReady]];
         }
     }
 }
@@ -117,15 +120,32 @@
 }
 
 - (void) sendPacket:(BMPacketType)packetType withBlob:(NSDictionary *)blob {
+    [self sendPacket:packetType withBlob:blob toPlayerIds:nil];
+}
+
+- (void) sendPacket:(BMPacketType)packetType withBlob:(NSDictionary *)blob toPlayerIds:(NSArray *)playerIds {
     [self sendPacket:packetType withBlob:blob fastMode:NO];
 }
 
 - (void) sendPacket:(BMPacketType)packetType withBlob:(NSDictionary *)blob fastMode:(BOOL)fastMode {
+    [self sendPacket:packetType withBlob:blob fastMode:fastMode toPlayerIds:nil];
+}
+
+- (void) sendPacket:(BMPacketType)packetType withBlob:(NSDictionary *)blob fastMode:(BOOL)fastMode toPlayerIds:(NSArray *)playerIds {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         BMGameCenterManager *gc = [BMGameCenterManager currentSession];
         
         NSData *hello = [[BMMultiplayerPacket packetWithType:packetType andBlob:blob] dataRepresentation];
         NSError *error = nil;
+        
+        if (playerIds.count > 0) {
+            if (![gc.match sendData:hello toPlayers:playerIds withDataMode:(fastMode ? GKMatchSendDataUnreliable : GKMatchSendDataReliable) error:&error]) {
+                if (error) {
+                    NSLog(@"ERROR: %@", error);
+                }
+            }
+        }
+        
         if (![gc.match sendDataToAllPlayers:hello withDataMode:(fastMode ? GKMatchSendDataUnreliable : GKMatchSendDataReliable) error:&error]) {
             if (error) {
                 NSLog(@"ERROR: %@", error);
@@ -135,19 +155,21 @@
 }
 
 - (void) sync {
-    // Let's send the hero list and their position
-    NSMutableDictionary *blob = [[NSMutableDictionary alloc] init];
-    NSMutableArray *playersBlob = [[NSMutableArray alloc] init];
-    
-    for (BMPlayer *p in self.players) {
-        NSDictionary *hostPlayerInfo = [p dictionaryRepresentation];
-        [playersBlob addObject:hostPlayerInfo];
+    if (self.multiplayerEnabled) {
+        // Let's send the hero list and their position
+        NSMutableDictionary *blob = [[NSMutableDictionary alloc] init];
+        NSMutableArray *playersBlob = [[NSMutableArray alloc] init];
+        
+        for (BMPlayer *p in self.players) {
+            NSDictionary *hostPlayerInfo = [p dictionaryRepresentation];
+            [playersBlob addObject:hostPlayerInfo];
+        }
+        blob[@"players"] = playersBlob;
+        
+        
+        // Now send the packet
+        [self sendPacket:kPacketTypeSync withBlob:blob];
     }
-    blob[@"players"] = playersBlob;
-    
-    
-    // Now send the packet
-    [self sendPacket:kPacketTypeSync withBlob:blob];
 }
 
 - (void) match:(GKMatch *)match didReceiveData:(NSData *)data fromPlayer:(NSString *)playerID {
@@ -158,36 +180,36 @@
     NSString *deviceName = [UIDevice currentDevice].name;
     
     if (packet.packetType == kPacketTypeGameReadyAnnouncement) {
-        if (!self.opponentIsReady) {
-            NSLog(@"Received kPacketTypeGameReadyAnnouncement on %@", deviceName);
-            self.opponentIsReady = YES;
-            [self sendPacket:kPacketTypeGameReadyAcknowledgment withBlob:nil];
-        } else {
-            NSLog(@"Ignoring kPacketTypeGameReadyAnnouncement replay on %@", deviceName);
-        }
+//        if (self.opponentsReady[playerID] && ![self.opponentsReady[playerID] boolValue]) {
+            NSLog(@"Received kPacketTypeGameReadyAnnouncement on %@ for %@", deviceName, playerID);
+            self.opponentsReady[playerID] = [NSNumber numberWithBool:YES];
+            [self sendPacket:kPacketTypeGameReadyAcknowledgment withBlob:nil toPlayerIds:@[playerID]];
+//        } else {
+//            NSLog(@"Ignoring kPacketTypeGameReadyAnnouncement replay on %@ from %@", deviceName, playerID);
+//        }
     } else if (packet.packetType == kPacketTypeGameReadyAcknowledgment) {
-        if (!self.opponentKnowsWereReady) {
-            NSLog(@"Received kPacketTypeGameReadyAcknowledgment on %@", deviceName);
-            self.opponentKnowsWereReady = YES;
+//        if (self.opponentsKnowingWereReady[playerID] && ![self.opponentsKnowingWereReady[playerID] boolValue]) {
+            NSLog(@"Received kPacketTypeGameReadyAcknowledgment on %@ for %@", deviceName, playerID);
+            self.opponentsKnowingWereReady[playerID] = [NSNumber numberWithBool:YES];
             
             // The server syncs to the send client the initial data
             if (!self.isClient)
                 [self sync];
-        } else {
-            NSLog(@"Ignoring kPacketTypeGameReadyAcknowledgment replay on %@", deviceName);
-        }
+//        } else {
+//            NSLog(@"Ignoring kPacketTypeGameReadyAcknowledgment replay on %@ from %@", deviceName, playerID);
+//        }
     } else if (packet.packetType == kPacketTypeSync) {
-        NSLog(@"Received kPacketTypeSync on %@", deviceName);
+        NSLog(@"Received kPacketTypeSync on %@ from %@", deviceName, playerID);
         [self handlePacketBlob:packet.blob];
         self.firstSyncIsDone = YES;
     } else if (packet.packetType == kPacketTypeUpdatePosition) {
         [self handleUpdatePosition:packet.blob];
     } else if (packet.packetType == kPacketTypeBombPlanted) {
-        NSLog(@"Received kPacketTypeBombPlanted on %@", deviceName);
+        NSLog(@"Received kPacketTypeBombPlanted on %@ from %@", deviceName, playerID);
         [self handleBombPlanted:packet.blob];
     }
     else {
-        NSLog(@"Unknown packet received on %@: %d", deviceName, packet.packetType);
+        NSLog(@"Unknown packet received on %@ from %@: %d", deviceName, playerID, packet.packetType);
     }
 }
 
@@ -254,6 +276,32 @@
     return nil;
 }
 
+- (NSArray *) playerIdsNotReady {
+    NSPredicate *filter = [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
+        NSNumber *n = self.opponentsReady[evaluatedObject];
+        return ![n boolValue];
+    }];
+    
+    return [self.opponentsReady.allKeys filteredArrayUsingPredicate:filter];
+}
+
+- (NSArray *) playerIdsNotKnowingWereReady {
+    NSPredicate *filter = [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
+        NSNumber *n = self.opponentsKnowingWereReady[evaluatedObject];
+        return ![n boolValue];
+    }];
+    
+    return [self.opponentsKnowingWereReady.allKeys filteredArrayUsingPredicate:filter];
+}
+
+- (BOOL) opponentsAreReady {
+    return ([[self playerIdsNotReady] count] == 0);
+}
+
+- (BOOL) opponentsKnowWereReady {
+    return ([[self playerIdsNotKnowingWereReady] count] == 0);
+}
+
 #pragma mark - Setup
 
 - (void) setupWorldLayers {
@@ -286,6 +334,8 @@
             BMPlayer *pl = [[BMPlayer alloc] init];
             pl.displayName = gkPlayer.alias;
             pl.gameCenterId = gkPlayer.playerID;
+            self.opponentsReady[pl.gameCenterId] = [NSNumber numberWithBool:NO];
+            self.opponentsKnowingWereReady[pl.gameCenterId] = [NSNumber numberWithBool:NO];
             [self.players addObject:pl];
         }
     } else {
@@ -505,7 +555,7 @@
 - (void) handlePan:(UIPanGestureRecognizer *)pan {
     
     // Controls are ignored until the other player isn't ready
-    if (!self.multiplayerEnabled || (self.opponentIsReady && self.opponentKnowsWereReady && ((self.isClient && self.firstSyncIsDone) || !self.isClient))) {
+    if (!self.multiplayerEnabled || (self.opponentsAreReady && self.opponentsKnowWereReady && ((self.isClient && self.firstSyncIsDone) || !self.isClient))) {
         if (pan.state == UIGestureRecognizerStateEnded || pan.state == UIGestureRecognizerStateFailed || pan.state == UIGestureRecognizerStateCancelled) {
             [BMJoystick localPlayerJoystick].hidden = YES;
         } else {

@@ -29,8 +29,10 @@ typedef void (^BMAssetLoadCompletionHandler)(void);
 @property (nonatomic, strong) GKPlayer *localGameCenterPlayer;
 
 /* Network Stuff */
-@property (nonatomic, assign) BOOL opponentIsReady;
-@property (nonatomic, assign) BOOL opponentKnowsWereReady;
+@property (nonatomic, strong) NSMutableDictionary *opponentsReady;
+@property (nonatomic, strong) NSMutableDictionary *opponentsKnowingWereReady;
+@property (nonatomic, readonly) BOOL opponentsAreReady;
+@property (nonatomic, readonly) BOOL opponentsKnowWereReady;
 @property (nonatomic, assign) BOOL firstSyncIsDone;
 @property (nonatomic, assign) CFTimeInterval retryTimeInterval;
 @property (nonatomic, assign) CFTimeInterval timeIntervalPositionUpdate;
@@ -71,5 +73,6 @@ typedef void (^BMAssetLoadCompletionHandler)(void);
 - (NSUInteger) playersWithCharacterOnMapCount;
 - (NSArray *) playersWithoutCharactersOnMap;
 - (void) sendPlantedBomb:(BMBomb *)bomb;
+- (void) sync;
 
 @end

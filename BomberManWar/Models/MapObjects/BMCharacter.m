@@ -336,6 +336,8 @@ CFTimeInterval const kCharacterMovingDuration = 0.5;
             weakSelf.currentDirection = kDirectionNone;
             [weakSelf runAction:[SKAction setTexture:[weakSelf defaultTexture]]];
             weakSelf.intelligence.target = nil;
+            
+            [weakSelf.gameScene sync];
         }];
     }
 }
