@@ -61,7 +61,7 @@
 
 - (SKAction *) deflagrationAction {
     if (!_deflagrationAction) {
-        _deflagrationAction = [SKAction animateWithTextures:_deflagrationFrames timePerFrame:0.1];
+        _deflagrationAction = [SKAction animateWithTextures:_deflagrationFrames timePerFrame:0.035];
     }
     return _deflagrationAction;
 }
