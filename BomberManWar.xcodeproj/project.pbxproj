@@ -23,6 +23,13 @@
 		44ADDD5318369E73005B0971 /* bomberman-anim-spritesheet.png in Resources */ = {isa = PBXBuildFile; fileRef = 44ADDD5218369E73005B0971 /* bomberman-anim-spritesheet.png */; };
 		44F9D03B183AA5F000C01D2E /* btn_bomb.png in Resources */ = {isa = PBXBuildFile; fileRef = 44F9D039183AA5F000C01D2E /* btn_bomb.png */; };
 		44F9D03C183AA5F000C01D2E /* btn_bomb@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 44F9D03A183AA5F000C01D2E /* btn_bomb@2x.png */; };
+		72D726111840A15700267E00 /* HockeySDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72D7260D1840A15700267E00 /* HockeySDK.framework */; };
+		72D726121840A15700267E00 /* HockeySDK.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 72D7260F1840A15700267E00 /* HockeySDK.xcconfig */; };
+		72D726131840A15700267E00 /* HockeySDKResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 72D726101840A15700267E00 /* HockeySDKResources.bundle */; };
+		72D726151840A19E00267E00 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72D726141840A19E00267E00 /* CoreText.framework */; };
+		72D726171840A1B800267E00 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72D726161840A1B800267E00 /* QuartzCore.framework */; };
+		72D726191840A1C200267E00 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72D726181840A1C200267E00 /* Security.framework */; };
+		72D7261B1840A1CD00267E00 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72D7261A1840A1CD00267E00 /* SystemConfiguration.framework */; };
 		72D869441835FCCE00478FE6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72D869431835FCCE00478FE6 /* Foundation.framework */; };
 		72D869461835FCCE00478FE6 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72D869451835FCCE00478FE6 /* CoreGraphics.framework */; };
 		72D869481835FCCE00478FE6 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72D869471835FCCE00478FE6 /* UIKit.framework */; };
@@ -114,6 +121,13 @@
 		44ADDD5218369E73005B0971 /* bomberman-anim-spritesheet.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bomberman-anim-spritesheet.png"; path = "Resources/bomberman-anim-spritesheet.png"; sourceTree = "<group>"; };
 		44F9D039183AA5F000C01D2E /* btn_bomb.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = btn_bomb.png; path = Resources/UI/btn_bomb.png; sourceTree = "<group>"; };
 		44F9D03A183AA5F000C01D2E /* btn_bomb@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "btn_bomb@2x.png"; path = "Resources/UI/btn_bomb@2x.png"; sourceTree = "<group>"; };
+		72D7260D1840A15700267E00 /* HockeySDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = HockeySDK.framework; sourceTree = "<group>"; };
+		72D7260F1840A15700267E00 /* HockeySDK.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = HockeySDK.xcconfig; sourceTree = "<group>"; };
+		72D726101840A15700267E00 /* HockeySDKResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = HockeySDKResources.bundle; sourceTree = "<group>"; };
+		72D726141840A19E00267E00 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
+		72D726161840A1B800267E00 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		72D726181840A1C200267E00 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		72D7261A1840A1CD00267E00 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		72D869401835FCCE00478FE6 /* BomberManWar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BomberManWar.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		72D869431835FCCE00478FE6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		72D869451835FCCE00478FE6 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -199,10 +213,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				72D7261B1840A1CD00267E00 /* SystemConfiguration.framework in Frameworks */,
+				72D726191840A1C200267E00 /* Security.framework in Frameworks */,
+				72D726171840A1B800267E00 /* QuartzCore.framework in Frameworks */,
+				72D869461835FCCE00478FE6 /* CoreGraphics.framework in Frameworks */,
+				72D726151840A19E00267E00 /* CoreText.framework in Frameworks */,
 				44983C49183D2D6E001A355F /* MultipeerConnectivity.framework in Frameworks */,
 				44071DDC183AF25900B2ABA3 /* GameKit.framework in Frameworks */,
 				72D8699C1836034800478FE6 /* libz.dylib in Frameworks */,
-				72D869461835FCCE00478FE6 /* CoreGraphics.framework in Frameworks */,
+				72D726111840A15700267E00 /* HockeySDK.framework in Frameworks */,
 				72D869481835FCCE00478FE6 /* UIKit.framework in Frameworks */,
 				72D8694A1835FCCE00478FE6 /* SpriteKit.framework in Frameworks */,
 				72D869441835FCCE00478FE6 /* Foundation.framework in Frameworks */,
@@ -264,9 +283,29 @@
 			name = "Special buttons";
 			sourceTree = "<group>";
 		};
+		72D7260C1840A15700267E00 /* HockeySDK.embeddedframework */ = {
+			isa = PBXGroup;
+			children = (
+				72D7260D1840A15700267E00 /* HockeySDK.framework */,
+				72D7260E1840A15700267E00 /* Resources */,
+			);
+			name = HockeySDK.embeddedframework;
+			path = Vendor/HockeySDK.embeddedframework;
+			sourceTree = "<group>";
+		};
+		72D7260E1840A15700267E00 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				72D7260F1840A15700267E00 /* HockeySDK.xcconfig */,
+				72D726101840A15700267E00 /* HockeySDKResources.bundle */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		72D869371835FCCE00478FE6 = {
 			isa = PBXGroup;
 			children = (
+				72D7260C1840A15700267E00 /* HockeySDK.embeddedframework */,
 				72D8694B1835FCCE00478FE6 /* BomberManWar */,
 				72D869721835FCCE00478FE6 /* BomberManWarTests */,
 				72D869421835FCCE00478FE6 /* Frameworks */,
@@ -286,6 +325,10 @@
 		72D869421835FCCE00478FE6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				72D7261A1840A1CD00267E00 /* SystemConfiguration.framework */,
+				72D726181840A1C200267E00 /* Security.framework */,
+				72D726161840A1B800267E00 /* QuartzCore.framework */,
+				72D726141840A19E00267E00 /* CoreText.framework */,
 				44983C48183D2D6E001A355F /* MultipeerConnectivity.framework */,
 				44071DDB183AF25900B2ABA3 /* GameKit.framework */,
 				72D8699B1836034800478FE6 /* libz.dylib */,
@@ -641,6 +684,7 @@
 				44ADDD5318369E73005B0971 /* bomberman-anim-spritesheet.png in Resources */,
 				72D869C31836100300478FE6 /* bomberman-test.png in Resources */,
 				72D869D91836107200478FE6 /* btn_circle_green@2x.png in Resources */,
+				72D726121840A15700267E00 /* HockeySDK.xcconfig in Resources */,
 				72D869DC1836107200478FE6 /* btn_circle_red.png in Resources */,
 				72D869D81836107200478FE6 /* btn_circle_green.png in Resources */,
 				72D869BE18360FF900478FE6 /* bomberman-demo.tmx in Resources */,
@@ -650,6 +694,7 @@
 				72D869DA1836107200478FE6 /* btn_circle_orange.png in Resources */,
 				72D869D71836107200478FE6 /* btn_circle_blue@2x.png in Resources */,
 				72D869DB1836107200478FE6 /* btn_circle_orange@2x.png in Resources */,
+				72D726131840A15700267E00 /* HockeySDKResources.bundle in Resources */,
 				72D869E01836107200478FE6 /* btn_rect_red.png in Resources */,
 				44F9D03B183AA5F000C01D2E /* btn_bomb.png in Resources */,
 				441E42F91839DE1B0074A93A /* Bombs.atlas in Resources */,
@@ -840,6 +885,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/fanagame/Documents/iOS/BMW/HockeySDK.embeddedframework,
+					/Users/fanagame/Documents/iOS/BMW/Vendor/HockeySDK.embeddedframework,
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "BomberManWar/BomberManWar-Prefix.pch";
 				INFOPLIST_FILE = "BomberManWar/BomberManWar-Info.plist";
@@ -856,6 +906,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/fanagame/Documents/iOS/BMW/HockeySDK.embeddedframework,
+					/Users/fanagame/Documents/iOS/BMW/Vendor/HockeySDK.embeddedframework,
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "BomberManWar/BomberManWar-Prefix.pch";
 				INFOPLIST_FILE = "BomberManWar/BomberManWar-Info.plist";
